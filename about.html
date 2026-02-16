@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About FÔRMÅL</title>
+  <style>
+    :root {
+      --bg-a: #eaf1f7;
+      --bg-b: #f8fbfe;
+      --panel: rgba(255, 255, 255, 0.84);
+      --line: #cfd9e5;
+      --text: #132031;
+      --muted: #4d5d73;
+      --brand: #0b6f98;
+      --brand-soft: #d8edf6;
+      --shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+      --radius: 18px;
+      --font: "SF Pro Text", "Helvetica Neue", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 5%, rgba(42, 168, 212, 0.22), transparent 38%),
+        radial-gradient(circle at 88% 16%, rgba(11, 111, 152, 0.2), transparent 38%),
+        linear-gradient(180deg, var(--bg-a), var(--bg-b));
+      padding: 14px;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+      padding-bottom: 26px;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(4px);
+      padding: 16px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .logo {
+      height: clamp(56px, 11vw, 82px);
+      width: auto;
+      max-width: 100%;
+    }
+
+    .brand h1 {
+      margin: 0;
+      color: var(--brand);
+      font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .back-btn {
+      min-height: 44px;
+      padding: 10px 14px;
+      border: 1px solid #9ec3d6;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--brand);
+      background: var(--brand-soft);
+      font-weight: 700;
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: stretch;
+    }
+
+    .hero h2 {
+      margin: 0 0 10px;
+      font-size: clamp(1.15rem, 2.8vw, 1.5rem);
+      line-height: 1.25;
+      color: #0d2e45;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.93rem;
+    }
+
+    .illustration-wrap {
+      border: 1px solid #d4e2ee;
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(70, 188, 227, 0.2), transparent 40%),
+        linear-gradient(160deg, #f0f7fb 0%, #ddeaf4 100%);
+      padding: 10px;
+    }
+
+    .animation-shell {
+      display: grid;
+      gap: 0;
+    }
+
+    .silo-animation-canvas {
+      width: 100%;
+      min-height: 260px;
+      aspect-ratio: 4 / 3;
+      display: block;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(11, 24, 39, 0.16), rgba(11, 24, 39, 0.06));
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mini-card {
+      border: 1px solid #d6e0ec;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 12px;
+    }
+
+    .mini-card h3 {
+      margin: 0 0 7px;
+      color: var(--brand);
+      font-size: 0.95rem;
+    }
+
+    .mini-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 760px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: 1fr; }
+      .top { align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="card top">
+      <div class="brand">
+        <img class="logo" src="g28.svg" alt="FÔRMÅL logo" />
+        <h1>About FÔRMÅL</h1>
+      </div>
+      <a class="back-btn" href="index.html">Back to Estimator</a>
+    </section>
+
+    <section class="card hero">
+      <div>
+        <h2>Digital presisjon for praktiske havbruksoperasjoner</h2>
+        <p>
+          FÔRMÅL ble startet med et enkelt mål: å gjøre håndtering og beregning av fôrdata i havbruksnæringen enklere, mer presis og mer tilgjengelig i felt. Selskapet oppstod etter at grunnleggerne selv opplevde hvor mye tid som gikk med til manuelle beregninger, uoversiktlige notater og manglende standardisering mellom anlegg og systemer.
+        </p>
+        <p style="margin-top:10px;">
+          Ved å kombinere praktisk erfaring fra oppdrett med moderne programvareutvikling, ble FÔRMÅL utviklet som et spesialisert verktøy designet direkte for daglig drift, ikke bare rapportering. Målet har hele tiden vært å lage løsninger som faktisk brukes ute på anleggene: raske, intuitive og tilpasset virkelige arbeidsforhold.
+        </p>
+      </div>
+      <div class="illustration-wrap">
+        <div class="animation-shell" data-silo-estimate-animation>
+          <canvas class="silo-animation-canvas" aria-label="Silo estimate process animation"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <section class="card grid">
+      <article class="mini-card">
+        <h3>Feltoptimalisert brukeropplevelse</h3>
+        <p>Utviklet for rask daglig bruk under reelle driftsforhold, inkludert bruk med hansker og mobile arbeidsflyter.</p>
+      </article>
+      <article class="mini-card">
+        <h3>Operasjonell kontroll</h3>
+        <p>Gir bedre beslutningsgrunnlag rundt fôrstatus, etterfyllingstidspunkt og stabil produksjonsflyt.</p>
+      </article>
+      <article class="mini-card">
+        <h3>Presisjonsdata</h3>
+        <p>Strukturert måleflyt erstatter håndskrevne notater og forbedrer sporbarhet over tid.</p>
+      </article>
+    </section>
+  </main>
+  <script src="silo-estimate-animation.js"></script>
+</body>
+</html>

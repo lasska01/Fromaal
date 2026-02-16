@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Silo Estimate Animation</title>
+  <style>
+    :root {
+      --bg: #0f1f31;
+      --bg-soft: #17324a;
+      --panel: rgba(255, 255, 255, 0.9);
+      --line: #9eb7cc;
+      --brand: #0b6f98;
+      --brand-soft: #d8edf6;
+      --text: #132031;
+      --muted: #4d5d73;
+      --font: "SF Pro Text", "Helvetica Neue", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 16% 8%, rgba(42, 168, 212, 0.2), transparent 35%),
+        linear-gradient(180deg, var(--bg), var(--bg-soft));
+      padding: 14px;
+    }
+
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid #cbd8e5;
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 16px 28px rgba(0, 0, 0, 0.2);
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .top h1 {
+      margin: 0;
+      color: var(--brand);
+      font-size: clamp(1.12rem, 2.6vw, 1.5rem);
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 10px 13px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--brand);
+      background: var(--brand-soft);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .silo-animation-canvas {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      min-height: 280px;
+      display: block;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(11, 24, 39, 0.18), rgba(11, 24, 39, 0.08));
+    }
+
+    .note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="card top">
+      <h1>SiloEstimateAnimation</h1>
+      <a class="btn" href="about.html">Back to About</a>
+    </section>
+
+    <section class="card" data-silo-estimate-animation>
+      <canvas class="silo-animation-canvas" aria-label="Silo estimate process animation"></canvas>
+      <p class="note">Timeline: fill, settle, daily depletion, then laser triangle measurement overlay.</p>
+    </section>
+  </main>
+  <script src="silo-estimate-animation.js"></script>
+</body>
+</html>

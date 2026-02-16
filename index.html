@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f4f5f7" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>FôrMål Siloestimat</title>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --bg-soft: #eceef2;
+      --card: #ffffff;
+      --line: #d8dde7;
+      --line-strong: #c6cfdd;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --brand-primary: #0b6f98;
+      --brand-primary-light: #d8edf6;
+      --brand-accent: #2aa8d4;
+      --panel-bg: #f8fafc;
+      --panel-shadow: 0 12px 26px rgba(15, 23, 42, 0.1);
+      --accent: var(--brand-primary);
+      --accent-soft: #dbe8ff;
+      --danger: #c93131;
+      --surface-soft: #f9fbfe;
+      --control-bg: #ffffff;
+      --control-border: #9ec3d6;
+      --control-border-strong: #8db8cf;
+      --control-text: #1f2937;
+      --button-bg: #d8edf6;
+      --button-bg-strong: #0b6f98;
+      --button-text: #0b6f98;
+      --button-text-strong: #ffffff;
+      --danger-bg: #fff5f5;
+      --danger-border: #f1b5b5;
+      --danger-text: #c93131;
+      --shadow: 0 10px 26px rgba(17, 24, 39, 0.08);
+      --radius: 18px;
+      --font: "SF Pro Text", "Helvetica Neue", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: linear-gradient(180deg, var(--bg) 0%, #eef1f5 100%);
+      color: var(--text);
+      font-family: var(--font);
+    }
+
+    body {
+      padding: 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    body.theme-outdoor {
+      --bg: #0f1720;
+      --bg-soft: #162330;
+      --card: #111d29;
+      --line: #2a3a4a;
+      --line-strong: #3e5267;
+      --text: #eaf4ff;
+      --muted: #b4c6d8;
+      --brand-primary: #7fd8ff;
+      --brand-primary-light: #1a3344;
+      --panel-bg: #102131;
+      --panel-shadow: 0 14px 28px rgba(0, 0, 0, 0.42);
+      --surface-soft: #152535;
+      --control-bg: #152737;
+      --control-border: #4b6680;
+      --control-border-strong: #5e7b98;
+      --control-text: #eaf4ff;
+      --button-bg: #21445c;
+      --button-bg-strong: #7fd8ff;
+      --button-text: #dff3ff;
+      --button-text-strong: #0a2232;
+      --danger-bg: #3a1f24;
+      --danger-border: #a35d67;
+      --danger-text: #ffd7dc;
+      --shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+    }
+
+    .app {
+      width: 100%;
+      max-width: 760px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-bottom: 24px;
+      min-height: calc(100vh - 24px);
+    }
+
+    .view {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .view.active { display: flex; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      padding: 8px 0 10px;
+      min-height: auto;
+      position: relative;
+    }
+
+    .app-header{
+      display:flex;
+      align-items:center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .app-logo{
+      height: clamp(56px, 12vw, 84px);
+      width:auto;
+      max-width: 100%;
+    }
+
+    .footer {
+      margin-top: auto;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      color: var(--muted);
+    }
+
+    .about-link {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      text-decoration: none;
+      min-height: 48px;
+      border-radius: 14px;
+      border: 1px solid var(--control-border);
+      color: var(--button-text);
+      background: var(--button-bg);
+      font-size: 0.92rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .company-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      background: #fff;
+      flex: 0 0 auto;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 1.18rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .row {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr;
+    }
+
+    .control,
+    .input,
+    .btn,
+    .nav-btn,
+    .save-btn {
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      min-height: 52px;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    .input,
+    .control {
+      width: 100%;
+      background: var(--control-bg);
+      color: var(--control-text);
+      padding: 12px;
+      outline: none;
+    }
+
+    .input:focus-visible,
+    .control:focus-visible,
+    .btn:focus-visible,
+    .nav-btn:focus-visible,
+    .save-btn:focus-visible {
+      outline: 2px solid var(--brand-primary);
+      outline-offset: 2px;
+    }
+
+    .control:focus,
+    .input:focus {
+      border-color: var(--brand-primary);
+    }
+
+    .label {
+      display: block;
+      margin: 0 0 6px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .nav-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr 1fr;
+      margin-top: 12px;
+    }
+
+    .nav-grid.single {
+      grid-template-columns: 1fr;
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .quick-link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+      border-radius: 14px;
+      border: 1px solid var(--control-border-strong);
+      background: var(--button-bg);
+      color: var(--button-text);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 0.2px;
+      text-decoration: none;
+    }
+
+    .silo-picker-card {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--surface-soft);
+      padding: 10px;
+    }
+
+    .silo-picker-label {
+      display: block;
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .silo-pill-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .silo-pill {
+      min-height: 52px;
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      background: var(--control-bg);
+      color: var(--control-text);
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      touch-action: manipulation;
+      transition: transform 110ms ease, background 180ms ease, border-color 180ms ease;
+    }
+
+    .silo-pill:active { transform: translateY(1px); }
+
+    .silo-pill[aria-checked="true"] {
+      background: var(--brand-primary-light);
+      border-color: var(--control-border-strong);
+      color: var(--brand-primary);
+      box-shadow: inset 0 0 0 1px rgba(11, 111, 152, 0.15);
+    }
+
+    .silo-pill.is-session-saved:not([aria-checked="true"]) {
+      background: #e8f8ee;
+      border-color: #58b981;
+      color: #1f7a49;
+      box-shadow: inset 0 0 0 1px rgba(48, 155, 94, 0.16);
+    }
+
+    body.theme-outdoor .silo-pill.is-session-saved:not([aria-checked="true"]) {
+      background: #1e3a2e;
+      border-color: #5fb88a;
+      color: #b9f2d0;
+      box-shadow: inset 0 0 0 1px rgba(95, 184, 138, 0.2);
+    }
+
+    .silo-pill[aria-checked="true"]::after {
+      content: "✓";
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+
+    .silo-pill:focus-visible {
+      outline: 2px solid var(--brand-primary);
+      outline-offset: 2px;
+    }
+
+    .system-bar {
+      margin-top: 8px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .system-btn {
+      min-height: 36px;
+      border: 1px solid var(--control-border);
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.15px;
+      text-align: center;
+      padding: 6px 8px;
+    }
+
+    .system-btn.compact {
+      min-height: 30px;
+      font-size: 0.74rem;
+      padding: 4px 8px;
+      border-radius: 9px;
+    }
+
+    .system-btn {
+      background: var(--button-bg);
+      color: var(--button-text);
+      cursor: pointer;
+    }
+
+    .system-btn[hidden] { display: none; }
+
+    .input.invalid {
+      border-color: #d9534f;
+      box-shadow: inset 0 0 0 1px rgba(217, 83, 79, 0.25);
+    }
+
+    .nav-btn,
+    .btn,
+    .save-btn {
+      background: var(--button-bg);
+      color: var(--button-text);
+      border-color: var(--control-border);
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 110ms ease, background 180ms ease;
+      touch-action: manipulation;
+    }
+
+    .nav-btn:active,
+    .btn:active,
+    .save-btn:active {
+      transform: translateY(1px);
+    }
+
+    .input-wrap { margin-top: 13px; }
+
+    .hint {
+      margin: 6px 0 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .group-box {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      background: var(--surface-soft);
+    }
+
+    .result {
+      margin-top: 13px;
+      border: 1px solid var(--line);
+      border-top: 3px solid var(--brand-primary);
+      border-radius: 14px;
+      padding: 12px;
+      background: var(--panel-bg);
+      box-shadow: var(--panel-shadow);
+    }
+
+    .result .label { margin-bottom: 4px; }
+
+    .result-value {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      color: var(--brand-primary);
+    }
+
+    .calibration details {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--surface-soft);
+    }
+
+    .calibration summary {
+      cursor: pointer;
+      list-style: none;
+      padding: 11px 12px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .calibration summary::-webkit-details-marker { display: none; }
+
+    .calibration-body {
+      border-top: 1px solid var(--line);
+      padding: 10px 12px 12px;
+    }
+
+    .mini-viz {
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .silo {
+      width: 170px;
+      filter: drop-shadow(0 12px 10px rgba(15, 23, 42, 0.1));
+    }
+
+    .silo-mark {
+      text-align: right;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .silo-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .silo-shell {
+      fill: url(#siloWallGradient);
+      stroke: #b9c5d6;
+      stroke-width: 2;
+    }
+
+    .silo-shade-left {
+      fill: rgba(123, 138, 156, 0.2);
+    }
+
+    .silo-shade-right {
+      fill: rgba(255, 255, 255, 0.18);
+    }
+
+    .fill-shape {
+      fill: url(#materialGradient);
+    }
+
+    .surface-shadow {
+      fill: none;
+      stroke: rgba(0, 0, 0, 0.14);
+      stroke-width: 3;
+      stroke-linecap: round;
+      transform: translateY(1px);
+    }
+
+    .surface-line {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.8);
+      stroke-width: 1.6;
+      stroke-linecap: round;
+    }
+
+    .silo-base-shadow {
+      fill: rgba(15, 23, 42, 0.12);
+    }
+
+    .outlet {
+      width: 24px;
+      height: 9px;
+      margin: 6px auto 0;
+      border-radius: 7px;
+      border: 1px solid #b7c2d2;
+      background: #e7ecf4;
+    }
+
+    .summary-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .summary-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .summary-silo {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-soft);
+      padding: 8px;
+      min-height: 122px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .summary-silo-title {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .summary-silo-tons {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--brand-primary);
+      pointer-events: none;
+    }
+
+    .summary-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .sign-wrap {
+      margin-top: 15px;
+      border-top: 1px solid var(--line);
+      padding-top: 15px;
+    }
+
+    .save-btn {
+      width: 100%;
+      margin-top: 8px;
+      background: var(--button-bg-strong);
+      color: var(--button-text-strong);
+      border-color: var(--button-bg-strong);
+    }
+
+    .btn.danger {
+      background: var(--danger-bg);
+      border-color: var(--danger-border);
+      color: var(--danger-text);
+    }
+
+    .status {
+      margin-top: 8px;
+      font-size: 0.84rem;
+      color: var(--muted);
+      min-height: 1.2em;
+    }
+
+    @media (min-width: 700px) {
+      body { padding: 18px; }
+      .card { padding: 18px; }
+      .app-logo { height: 84px; }
+      .silo { width: 170px; }
+    }
+
+    @media (max-width: 520px) {
+      .silo-pill-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section id="editView" class="view active">
+      <div class="card">
+        <div class="header">
+          <header class="app-header">
+            <img src="g28.svg" class="app-logo" alt="Company logo" />
+          </header>
+        </div>
+
+        <div class="quick-links">
+          <a class="quick-link-btn" href="how-to-use.html">Hvordan bruke</a>
+          <a class="quick-link-btn" href="historikk.html">Historikk</a>
+        </div>
+
+        <div class="system-bar">
+          <button id="installBtn" class="system-btn" type="button" hidden>Installer app</button>
+          <button id="themeToggleBtn" class="system-btn compact" type="button">mørkmodus</button>
+        </div>
+
+        <div class="silo-picker-card">
+          <span class="silo-picker-label">Aktiv silo</span>
+          <div id="siloPicker" class="silo-pill-grid" role="radiogroup" aria-label="Aktiv silo"></div>
+        </div>
+
+        <div class="nav-grid">
+          <button id="prevBtn" class="nav-btn" type="button">Forrige</button>
+          <button id="nextBtn" class="nav-btn" type="button">Lagre og neste</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="input-wrap">
+          <label class="label" for="distanceInput">Sentermåling med laser (m)</label>
+          <input id="distanceInput" class="input" type="text" inputmode="decimal" placeholder="f.eks. 6,37 eller 6.37" />
+          <p class="hint">Vertikal senteravstand. Desimal med komma eller punktum er tillatt.</p>
+        </div>
+
+        <div class="input-wrap">
+          <label class="label" for="edgeDistanceInput">Kantsmåling med laser (m, diagonal, valgfri)</label>
+          <input id="edgeDistanceInput" class="input" type="text" inputmode="decimal" placeholder="f.eks. 6,92 eller 6.92" />
+          <p class="hint">Hvis oppgitt rekonstrueres overflategeometrien automatisk fra senter- og kantmåling.</p>
+        </div>
+
+        <div class="group-box" style="margin-top:10px;">
+          <p class="label" style="margin-bottom:8px;">Automatisk overflate</p>
+          <div class="row">
+            <div><span class="label">Automatisk overflatetype</span><div id="autoSurfaceType">Ikke tilgjengelig</div></div>
+            <div><span class="label">Delta (m)</span><div id="autoDelta">Ikke tilgjengelig</div></div>
+            <div><span class="label">Estimert hvilevinkel (grader)</span><div id="autoAngle">Ikke tilgjengelig</div></div>
+            <div><span class="label">h_edge (m)</span><div id="autoHEdge">Ikke tilgjengelig</div></div>
+          </div>
+        </div>
+
+        <div class="result" aria-live="polite">
+          <p class="label">Estimert volum og tonn</p>
+          <p id="resultValue" class="result-value">0.00 m³ | 0.0 tonn</p>
+        </div>
+
+        <div class="calibration" style="margin-top:10px;">
+          <details>
+            <summary>Kalibrering (endres sjelden)</summary>
+            <div class="calibration-body">
+              <label class="label" for="bulkDensitySelect">Bulktetthet (kg/m³)</label>
+              <select id="bulkDensitySelect" class="control">
+                <option value="550">550</option>
+                <option value="600">600</option>
+                <option value="650" selected>650</option>
+                <option value="700">700</option>
+                <option value="750">750</option>
+                <option value="800">800</option>
+              </select>
+            </div>
+          </details>
+        </div>
+
+        <div class="mini-viz">
+          <div class="silo" aria-hidden="true">
+            <div id="fillLabel" class="silo-mark">0%</div>
+            <svg id="siloSvg" class="silo-svg" viewBox="0 0 180 236" role="img" aria-label="Visualisering av silonivå">
+              <defs>
+                <linearGradient id="siloWallGradient" x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stop-color="#f8fafc" />
+                  <stop offset="100%" stop-color="#e6ecf4" />
+                </linearGradient>
+                <linearGradient id="materialGradient" x1="0" x2="0" y1="0" y2="1">
+                  <stop id="materialStopTop" offset="0%" stop-color="#67d98f" />
+                  <stop id="materialStopBottom" offset="100%" stop-color="#1f9f5c" />
+                </linearGradient>
+              </defs>
+
+              <ellipse class="silo-base-shadow" cx="90" cy="226" rx="54" ry="8"></ellipse>
+              <path id="siloShell" class="silo-shell" d="M26 10 H154 V154 L90 220 L26 154 Z"></path>
+              <path id="fillShape" class="fill-shape" d=""></path>
+              <path id="surfaceShadow" class="surface-shadow" d=""></path>
+              <path id="surfaceLine" class="surface-line" d=""></path>
+              <path class="silo-shade-left" d="M26 10 H44 V172 L90 220 L26 154 Z"></path>
+              <path class="silo-shade-right" d="M136 10 H154 V154 L90 220 L122 172 Z"></path>
+            </svg>
+            <div class="outlet"></div>
+          </div>
+        </div>
+
+        <div class="status" id="inputWarning"></div>
+        <button id="unlockEditBtn" class="btn" type="button" style="display:none;margin-top:8px;">Rediger igjen</button>
+        <div class="status" id="editStatus"></div>
+      </div>
+
+      <div class="card">
+        <button id="resetAllBtn" class="btn danger" type="button">Slett øktdata</button>
+      </div>
+    </section>
+
+    <section id="summaryView" class="view">
+      <div class="card">
+        <div class="summary-head">
+          <div class="brand">
+            <img
+              src="company-logo.png"
+              alt="Company logo"
+              class="company-logo"
+              onerror="this.style.display='none'"
+            />
+            <div class="brand-copy">
+              <h2 class="title" style="margin:0;">Silooversikt</h2>
+              <p id="summaryMeta" class="summary-meta"></p>
+            </div>
+          </div>
+          <button id="backBtn" class="btn" type="button">Tilbake</button>
+        </div>
+
+        <div id="summaryGrid" class="summary-grid"></div>
+
+        <div class="summary-actions">
+          <button id="downloadImageBtn" class="btn" type="button">Last ned oversiktsbilde</button>
+          <button id="shareImageBtn" class="btn" type="button">Send på e-post</button>
+        </div>
+
+        <div class="sign-wrap">
+          <label class="label" for="signInitialsInput">Signeringsinitialer</label>
+          <input id="signInitialsInput" class="input" type="text" maxlength="6" placeholder="f.eks. LS" autocomplete="off" />
+          <button id="saveSignedBtn" class="save-btn" type="button">Lagre signert ukesregistrering</button>
+          <div id="summaryStatus" class="status"></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a class="about-link" href="about.html">Om FÔRMÅL</a>
+    </footer>
+  </main>
+
+  <script>
+    (() => {
+      const SILO_COUNT = 6;
+      const STORAGE_KEY = "pellet_silo_estimator_v5";
+      const UI_PREFS_KEY = "formaal_ui_prefs_v1";
+
+      const LASER_OFFSET_M = 1.0;
+      const SURFACE_RADIUS_M = 2.0;
+      const SURFACE_EPSILON_M = 0.05;
+      const RECT_WIDTH_M = 4.0;
+      const RECT_DEPTH_M = 5.46;
+      const RECT_HEIGHT_M = 5.712;
+      const PYRAMID_HEIGHT_M = 2.383;
+      const TOTAL_HEIGHT_M = 8.095;
+      const PYRAMID_VOLUME_M3 = 17.35;
+      const DEFAULT_BULK_DENSITY_KG_M3 = 650;
+      const BASE_AREA_M2 = RECT_WIDTH_M * RECT_DEPTH_M;
+      const MAX_INTERNAL_VOLUME_M3 = PYRAMID_VOLUME_M3 + BASE_AREA_M2 * RECT_HEIGHT_M;
+      const HOPPER_RATIO = (PYRAMID_VOLUME_M3 / MAX_INTERNAL_VOLUME_M3) * 100;
+      const COMPANY_LOGO_SRC = "company-logo.png";
+
+      const defaultSilo = () => ({
+        distance: "",
+        edgeDistance: "",
+        updatedAt: null,
+      });
+
+      const defaultWeekly = () => Array.from({ length: SILO_COUNT }, () => []);
+
+      const state = {
+        current: 0,
+        silos: Array.from({ length: SILO_COUNT }, defaultSilo),
+        weekly: defaultWeekly(),
+        settings: { bulkDensityKgM3: DEFAULT_BULK_DENSITY_KG_M3 },
+        ui: { themeOutdoor: false, editLocked: false, sessionSaved: Array.from({ length: SILO_COUNT }, () => false) },
+      };
+
+      let sessionBaseline = null;
+      let companyLogoPromise = null;
+      let deferredInstallPrompt = null;
+
+      const els = {
+        editView: document.getElementById("editView"),
+        summaryView: document.getElementById("summaryView"),
+        siloPicker: document.getElementById("siloPicker"),
+        prevBtn: document.getElementById("prevBtn"),
+        nextBtn: document.getElementById("nextBtn"),
+        distanceInput: document.getElementById("distanceInput"),
+        edgeDistanceInput: document.getElementById("edgeDistanceInput"),
+        autoSurfaceType: document.getElementById("autoSurfaceType"),
+        autoDelta: document.getElementById("autoDelta"),
+        autoAngle: document.getElementById("autoAngle"),
+        autoHEdge: document.getElementById("autoHEdge"),
+        bulkDensitySelect: document.getElementById("bulkDensitySelect"),
+        resultValue: document.getElementById("resultValue"),
+        fillLabel: document.getElementById("fillLabel"),
+        installBtn: document.getElementById("installBtn"),
+        themeToggleBtn: document.getElementById("themeToggleBtn"),
+        siloSvg: document.getElementById("siloSvg"),
+        fillShape: document.getElementById("fillShape"),
+        surfaceShadow: document.getElementById("surfaceShadow"),
+        surfaceLine: document.getElementById("surfaceLine"),
+        materialStopTop: document.getElementById("materialStopTop"),
+        materialStopBottom: document.getElementById("materialStopBottom"),
+        inputWarning: document.getElementById("inputWarning"),
+        unlockEditBtn: document.getElementById("unlockEditBtn"),
+        editStatus: document.getElementById("editStatus"),
+        resetAllBtn: document.getElementById("resetAllBtn"),
+        summaryMeta: document.getElementById("summaryMeta"),
+        summaryGrid: document.getElementById("summaryGrid"),
+        backBtn: document.getElementById("backBtn"),
+        downloadImageBtn: document.getElementById("downloadImageBtn"),
+        shareImageBtn: document.getElementById("shareImageBtn"),
+        signInitialsInput: document.getElementById("signInitialsInput"),
+        saveSignedBtn: document.getElementById("saveSignedBtn"),
+        summaryStatus: document.getElementById("summaryStatus"),
+      };
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function round(value, digits = 1) {
+        const factor = 10 ** digits;
+        return Math.round(value * factor) / factor;
+      }
+
+      function normalizeInitials(value) {
+        return String(value || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6);
+      }
+
+      function parseDecimalInput(value) {
+        const raw = String(value || "").trim();
+        if (raw === "") {
+          return { valid: true, empty: true, number: NaN };
+        }
+
+        const normalized = raw.replace(",", ".");
+        if (!/^\d*([.]\d*)?$/.test(normalized)) {
+          return { valid: false, empty: false, number: NaN };
+        }
+
+        const number = Number(normalized);
+        if (!Number.isFinite(number)) {
+          return { valid: true, empty: false, number: NaN };
+        }
+
+        return { valid: true, empty: false, number };
+      }
+
+      function getDistanceValue(distanceText) {
+        const parsed = parseDecimalInput(distanceText);
+        if (!parsed.valid || parsed.empty || !Number.isFinite(parsed.number)) {
+          return TOTAL_HEIGHT_M + LASER_OFFSET_M;
+        }
+        return clamp(parsed.number, 0, 20);
+      }
+
+      function getOptionalDistanceValue(distanceText) {
+        const parsed = parseDecimalInput(distanceText);
+        if (!parsed.valid || parsed.empty || !Number.isFinite(parsed.number)) {
+          return NaN;
+        }
+        return clamp(parsed.number, 0, 20);
+      }
+
+      function getISOWeekInfo(date = new Date()) {
+        const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        const week = String(weekNo).padStart(2, "0");
+        const year = d.getUTCFullYear();
+        return { key: `${year}-W${week}`, label: `Uke ${week} / ${year}` };
+      }
+
+      function getEuropeanDateText(date = new Date()) {
+        return date.toLocaleDateString("en-GB", { day: "2-digit", month: "2-digit", year: "numeric" });
+      }
+
+      function formatSurfaceType(surfaceType) {
+        if (surfaceType === "concave") return "Konkav";
+        if (surfaceType === "convex") return "Konveks";
+        return "Flat";
+      }
+
+      function loadUiPrefs() {
+        try {
+          const raw = localStorage.getItem(UI_PREFS_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          state.ui.themeOutdoor = Boolean(parsed.themeOutdoor);
+        } catch (_err) {
+          // ignore invalid prefs
+        }
+      }
+
+      function saveUiPrefs() {
+        localStorage.setItem(UI_PREFS_KEY, JSON.stringify({ themeOutdoor: state.ui.themeOutdoor }));
+      }
+
+      function applyTheme() {
+        document.body.classList.toggle("theme-outdoor", state.ui.themeOutdoor);
+        els.themeToggleBtn.textContent = state.ui.themeOutdoor ? "lysmodus" : "mørkmodus";
+      }
+
+      function calculateVolumeFromPelletHeight(pelletHeightM) {
+        const pelletHeight = clamp(pelletHeightM, 0, TOTAL_HEIGHT_M);
+        if (pelletHeight <= PYRAMID_HEIGHT_M) {
+          const ratio = pelletHeight / PYRAMID_HEIGHT_M;
+          return PYRAMID_VOLUME_M3 * ratio ** 3;
+        }
+        return PYRAMID_VOLUME_M3 + BASE_AREA_M2 * (pelletHeight - PYRAMID_HEIGHT_M);
+      }
+
+      function calculateVolumeFromLaserMeasurement(laserMeasurementM) {
+        const distanceFromSiloTop = laserMeasurementM - LASER_OFFSET_M;
+        const pelletHeight = clamp(TOTAL_HEIGHT_M - distanceFromSiloTop, 0, TOTAL_HEIGHT_M);
+        return {
+          volumeM3: calculateVolumeFromPelletHeight(pelletHeight),
+          pelletHeightM: pelletHeight,
+        };
+      }
+
+      // Reconstructs surface geometry from center and edge laser measurements using triangle geometry.
+      // Delta sign convention:
+      // delta > 0 => center measurement is longer than edge vertical distance => concave.
+      // delta < 0 => center measurement is shorter than edge vertical distance => convex.
+      function reconstructSurfaceFromMeasurements(centerMeasurementM, edgeMeasurementM) {
+        if (!Number.isFinite(edgeMeasurementM) || edgeMeasurementM <= SURFACE_RADIUS_M) {
+          return null;
+        }
+
+        const hEdge = Math.sqrt((edgeMeasurementM ** 2) - (SURFACE_RADIUS_M ** 2));
+        const deltaH = centerMeasurementM - hEdge;
+        const angleRad = Math.atan(Math.abs(deltaH) / SURFACE_RADIUS_M);
+        const avgMeasurement = (centerMeasurementM + hEdge) / 2;
+
+        const surfaceType = deltaH > SURFACE_EPSILON_M
+          ? "concave"
+          : (deltaH < -SURFACE_EPSILON_M ? "convex" : "flat");
+
+        return {
+          hEdge,
+          deltaH,
+          angleRad,
+          angleDeg: (angleRad * 180) / Math.PI,
+          avgMeasurement,
+          surfaceType,
+        };
+      }
+
+      function calculateSiloResult(silo) {
+        const centerMeasurement = getDistanceValue(silo.distance);
+        const edgeMeasurement = getOptionalDistanceValue(silo.edgeDistance);
+        const reconstructed = reconstructSurfaceFromMeasurements(centerMeasurement, edgeMeasurement);
+
+        // Fallback: unchanged single-measurement model when edge measurement is absent/invalid.
+        const solved = reconstructed
+          ? calculateVolumeFromLaserMeasurement(reconstructed.avgMeasurement)
+          : calculateVolumeFromLaserMeasurement(centerMeasurement);
+
+        const finalVolume = solved.volumeM3;
+        const tons = finalVolume * (state.settings.bulkDensityKgM3 / 1000);
+        const fillPercentRaw = (finalVolume / MAX_INTERNAL_VOLUME_M3) * 100;
+
+        return {
+          volumeM3: finalVolume,
+          tons,
+          pelletHeightM: solved.pelletHeightM,
+          fillPercentRaw,
+          fillPercent: clamp(fillPercentRaw, 0, 100),
+          surfaceType: reconstructed ? reconstructed.surfaceType : "flat",
+          diagnostics: {
+            mode: reconstructed ? "two-measurement" : "single-measurement",
+            centerMeasurement,
+            edgeMeasurement: Number.isFinite(edgeMeasurement) ? edgeMeasurement : null,
+            angleOfReposeDeg: reconstructed ? reconstructed.angleDeg : null,
+            deltaH: reconstructed ? reconstructed.deltaH : null,
+            hEdge: reconstructed ? reconstructed.hEdge : null,
+            avgMeasurement: reconstructed ? reconstructed.avgMeasurement : centerMeasurement,
+          },
+        };
+      }
+
+      function getAllSiloResults() {
+        return state.silos.map((silo) => calculateSiloResult(silo));
+      }
+
+      function buildSessionBaseline() {
+        return {
+          current: state.current,
+          silos: state.silos.map((silo) => ({ ...silo })),
+          settings: { ...state.settings },
+          editLocked: Boolean(state.ui.editLocked),
+        };
+      }
+
+      function saveState() {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            current: state.current,
+            silos: state.silos,
+            weekly: state.weekly,
+            settings: state.settings,
+            ui: state.ui,
+          })
+        );
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+
+          if (Array.isArray(parsed.silos)) {
+            state.silos = Array.from({ length: SILO_COUNT }, (_, index) => {
+              const item = parsed.silos[index] || {};
+              return {
+                distance: String(item.distance ?? ""),
+                edgeDistance: String(item.edgeDistance ?? ""),
+                updatedAt: Number.isFinite(Number(item.updatedAt)) ? Number(item.updatedAt) : null,
+              };
+            });
+          }
+
+          if (Number.isFinite(Number(parsed.current))) {
+            state.current = clamp(Math.round(Number(parsed.current)), 0, SILO_COUNT - 1);
+          }
+
+          if (parsed.settings && Number.isFinite(Number(parsed.settings.bulkDensityKgM3))) {
+            state.settings.bulkDensityKgM3 = clamp(Math.round(Number(parsed.settings.bulkDensityKgM3)), 100, 2000);
+          }
+
+          if (parsed.ui) {
+            state.ui.editLocked = Boolean(parsed.ui.editLocked);
+          }
+
+          if (Array.isArray(parsed.weekly)) {
+            state.weekly = Array.from({ length: SILO_COUNT }, (_, index) =>
+              Array.isArray(parsed.weekly[index]) ? parsed.weekly[index] : []
+            );
+          }
+        } catch (_err) {
+          // Ignore bad storage and continue with defaults.
+        }
+      }
+
+      function getCurrentSilo() {
+        return state.silos[state.current];
+      }
+
+      function getFillGradientByPercent(fillPercent) {
+        if (fillPercent >= 60) {
+          return { top: "#67d98f", bottom: "#1f9f5c" };
+        }
+        if (fillPercent >= 30) {
+          return { top: "#f6d769", bottom: "#d59a20" };
+        }
+        return { top: "#ee7b73", bottom: "#c53a35" };
+      }
+
+      function renderSiloFill(fillPercent, surfaceType, deltaM) {
+        const xLeftTank = 26;
+        const xRightTank = 154;
+        const xMid = 90;
+        const yTop = 10;
+        const yBodyBottom = 154;
+        const yTip = 220;
+
+        let yEdge;
+        if (fillPercent <= HOPPER_RATIO) {
+          const hopperFraction = clamp(fillPercent / HOPPER_RATIO, 0, 1);
+          yEdge = yTip - (yTip - yBodyBottom) * hopperFraction;
+        } else {
+          const bodyFraction = clamp((fillPercent - HOPPER_RATIO) / (100 - HOPPER_RATIO), 0, 1);
+          yEdge = yBodyBottom - (yBodyBottom - yTop) * bodyFraction;
+        }
+
+        const inTankSection = yEdge <= yBodyBottom - 0.5;
+        const absDelta = Math.abs(deltaM || 0);
+        const isFlat = absDelta < 0.05 || surfaceType === "flat" || !inTankSection;
+        const amplitude = isFlat ? 0 : clamp(absDelta * 46, 8, 30);
+
+        const xLeftEdge = inTankSection
+          ? xLeftTank
+          : xLeftTank + ((xMid - xLeftTank) * clamp((yEdge - yBodyBottom) / (yTip - yBodyBottom), 0, 1));
+        const xRightEdge = inTankSection
+          ? xRightTank
+          : xRightTank - ((xRightTank - xMid) * clamp((yEdge - yBodyBottom) / (yTip - yBodyBottom), 0, 1));
+
+        const yMidRaw = surfaceType === "concave"
+          ? yEdge + amplitude
+          : yEdge - amplitude;
+        const yMid = clamp(yMidRaw, yTop + 2, yTip - 4);
+
+        let surfacePath;
+        if (isFlat) {
+          surfacePath = `M ${xLeftEdge} ${yEdge} L ${xRightEdge} ${yEdge}`;
+        } else if (inTankSection) {
+          // Cone-like top: keeps a centered pointed peak/funnel and avoids going fully to both walls.
+          const shoulderInset = clamp(14 + (amplitude * 0.2), 12, 20);
+          const xLeftShoulder = xLeftEdge + shoulderInset;
+          const xRightShoulder = xRightEdge - shoulderInset;
+          surfacePath = [
+            `M ${xLeftEdge} ${yEdge}`,
+            `L ${xLeftShoulder} ${yEdge}`,
+            `L ${xMid} ${yMid}`,
+            `L ${xRightShoulder} ${yEdge}`,
+            `L ${xRightEdge} ${yEdge}`,
+          ].join(" ");
+        } else {
+          surfacePath = `M ${xLeftEdge} ${yEdge} L ${xMid} ${yMid} L ${xRightEdge} ${yEdge}`;
+        }
+
+        let fillPath;
+        if (inTankSection) {
+          fillPath = `${surfacePath} L ${xRightTank} ${yBodyBottom} L ${xMid} ${yTip} L ${xLeftTank} ${yBodyBottom} Z`;
+        } else {
+          fillPath = `${surfacePath} L ${xMid} ${yTip} Z`;
+        }
+
+        els.fillShape.setAttribute("d", fillPath);
+        els.surfaceLine.setAttribute("d", surfacePath);
+        els.surfaceShadow.setAttribute("d", surfacePath);
+      }
+
+      function renderEdit() {
+        const silo = getCurrentSilo();
+        const result = calculateSiloResult(silo);
+
+        Array.from(els.siloPicker.querySelectorAll(".silo-pill")).forEach((btn, idx) => {
+          const active = idx === state.current;
+          btn.setAttribute("aria-checked", active ? "true" : "false");
+          btn.classList.toggle("is-session-saved", Boolean(state.ui.sessionSaved[idx]));
+        });
+        els.nextBtn.textContent = state.current === SILO_COUNT - 1 ? "Lagre og oppsummer" : "Lagre og neste";
+        const firstSilo = state.current === 0;
+        els.prevBtn.style.display = firstSilo ? "none" : "";
+        els.prevBtn.disabled = firstSilo;
+        els.prevBtn.setAttribute("aria-hidden", firstSilo ? "true" : "false");
+        els.prevBtn.tabIndex = firstSilo ? -1 : 0;
+        els.prevBtn.parentElement.classList.toggle("single", firstSilo);
+
+        els.distanceInput.value = silo.distance;
+        els.edgeDistanceInput.value = silo.edgeDistance || "";
+        els.bulkDensitySelect.value = String(state.settings.bulkDensityKgM3);
+        const parsedEdge = getOptionalDistanceValue(silo.edgeDistance);
+        const invalidEdge = silo.edgeDistance.trim() !== "" && (!Number.isFinite(parsedEdge) || parsedEdge <= SURFACE_RADIUS_M);
+        els.edgeDistanceInput.classList.toggle("invalid", invalidEdge);
+
+        if (result.diagnostics.mode === "two-measurement") {
+          els.autoSurfaceType.textContent = formatSurfaceType(result.surfaceType);
+          els.autoDelta.textContent = `${result.diagnostics.deltaH.toFixed(3)} m`;
+          els.autoAngle.textContent = `${result.diagnostics.angleOfReposeDeg.toFixed(2)}°`;
+          els.autoHEdge.textContent = `${result.diagnostics.hEdge.toFixed(3)} m`;
+        } else {
+          els.autoSurfaceType.textContent = "Ikke tilgjengelig";
+          els.autoDelta.textContent = "Ikke tilgjengelig";
+          els.autoAngle.textContent = "Ikke tilgjengelig";
+          els.autoHEdge.textContent = "Ikke tilgjengelig";
+        }
+
+        if (state.ui.editLocked) {
+          els.inputWarning.textContent = "Målinger er låst etter signering. Trykk «Rediger igjen» for å endre data.";
+        } else if (invalidEdge) {
+          els.inputWarning.textContent = `Kantsmåling må være større enn ${SURFACE_RADIUS_M.toFixed(1)} m for gyldig beregning.`;
+        } else {
+          els.inputWarning.textContent = "";
+        }
+
+        els.distanceInput.disabled = state.ui.editLocked;
+        els.edgeDistanceInput.disabled = state.ui.editLocked;
+        els.bulkDensitySelect.disabled = state.ui.editLocked;
+        els.unlockEditBtn.style.display = state.ui.editLocked ? "inline-flex" : "none";
+
+        els.resultValue.textContent = `${result.volumeM3.toFixed(2)} m³ | ${result.tons.toFixed(1)} tonn`;
+        els.fillLabel.textContent = `${Math.round(result.fillPercentRaw)}%`;
+
+        const fillGradient = getFillGradientByPercent(result.fillPercent);
+        els.materialStopTop.setAttribute("stop-color", fillGradient.top);
+        els.materialStopBottom.setAttribute("stop-color", fillGradient.bottom);
+        renderSiloFill(result.fillPercent, result.surfaceType, result.diagnostics.deltaH || 0);
+      }
+
+      function renderSummaryGrid() {
+        const results = getAllSiloResults();
+        const week = getISOWeekInfo(new Date());
+        els.summaryMeta.textContent = `${getEuropeanDateText(new Date())}  |  ${week.label}`;
+
+        els.summaryGrid.innerHTML = "";
+        for (let i = 0; i < SILO_COUNT; i += 1) {
+          const card = document.createElement("div");
+          card.className = "summary-silo";
+          const label = document.createElement("p");
+          label.className = "summary-silo-title";
+          label.textContent = `Silo ${i + 1}`;
+          const tons = document.createElement("div");
+          tons.className = "summary-silo-tons";
+          tons.textContent = `${results[i].tons.toFixed(1)} t`;
+          card.appendChild(label);
+          card.appendChild(tons);
+          els.summaryGrid.appendChild(card);
+        }
+      }
+
+      function switchToSummary() {
+        renderSummaryGrid();
+        els.summaryStatus.textContent = "";
+        els.signInitialsInput.value = "";
+        els.editView.classList.remove("active");
+        els.summaryView.classList.add("active");
+      }
+
+      function switchToEdit() {
+        els.summaryView.classList.remove("active");
+        els.editView.classList.add("active");
+        renderEdit();
+      }
+
+      function loadCompanyLogo() {
+        if (companyLogoPromise) return companyLogoPromise;
+
+        companyLogoPromise = new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = () => resolve(null);
+          img.src = COMPANY_LOGO_SRC;
+        });
+
+        return companyLogoPromise;
+      }
+
+      async function buildSummaryImageCanvas() {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1200;
+        canvas.height = 1600;
+        const ctx = canvas.getContext("2d");
+
+        const week = getISOWeekInfo(new Date());
+        const dateText = getEuropeanDateText(new Date());
+        const results = getAllSiloResults();
+
+        ctx.fillStyle = "#f4f5f7";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const logo = await loadCompanyLogo();
+        if (logo) {
+          const logoSize = 86;
+          const logoX = 70;
+          const logoY = 40;
+          ctx.fillStyle = "#ffffff";
+          ctx.strokeStyle = "#d5dce8";
+          ctx.lineWidth = 2;
+          roundRect(ctx, logoX, logoY, logoSize, logoSize, 18, true, true);
+          ctx.drawImage(logo, logoX + 6, logoY + 6, logoSize - 12, logoSize - 12);
+        }
+
+        ctx.fillStyle = "#1f2937";
+        ctx.font = "bold 56px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+        ctx.fillText("FôrMål Silooversikt", 175, 95);
+
+        ctx.fillStyle = "#6b7280";
+        ctx.font = "34px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+        ctx.fillText(`${dateText}   ${week.label}`, 175, 145);
+        ctx.fillText(`Bulktetthet: ${state.settings.bulkDensityKgM3} kg/m³`, 175, 190);
+
+        const cardW = 330;
+        const cardH = 240;
+        const gapX = 35;
+        const gapY = 42;
+        const startX = 70;
+        const startY = 250;
+
+        for (let i = 0; i < SILO_COUNT; i += 1) {
+          const col = i % 3;
+          const row = Math.floor(i / 3);
+          const x = startX + col * (cardW + gapX);
+          const y = startY + row * (cardH + gapY);
+
+          ctx.fillStyle = "#ffffff";
+          ctx.strokeStyle = "#d5dce8";
+          ctx.lineWidth = 3;
+          roundRect(ctx, x, y, cardW, cardH, 22, true, true);
+
+          ctx.fillStyle = "#6b7280";
+          ctx.font = "700 28px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+          ctx.fillText(`Silo ${i + 1}`, x + 24, y + 46);
+
+          ctx.fillStyle = "#1f2937";
+          ctx.font = "800 52px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+          ctx.fillText(`${results[i].tons.toFixed(1)} t`, x + 86, y + 145);
+
+          ctx.fillStyle = "#6b7280";
+          ctx.font = "500 24px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+          ctx.fillText(`${results[i].volumeM3.toFixed(2)} m³`, x + 100, y + 190);
+        }
+
+        ctx.fillStyle = "#1f2937";
+        ctx.font = "700 22px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+        ctx.fillText("Diagnostikk for automatisk overflate", 70, 860);
+        ctx.fillStyle = "#4b5563";
+        ctx.font = "500 18px -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+        let diagnosticsY = 900;
+        for (let i = 0; i < SILO_COUNT; i += 1) {
+          const d = results[i].diagnostics;
+          const line = [
+            `Silo ${i + 1}`,
+            `Sentermåling: ${d.centerMeasurement.toFixed(3)} m`,
+            `Kantmåling: ${d.edgeMeasurement === null ? "Ikke tilgjengelig" : `${d.edgeMeasurement.toFixed(3)} m`}`,
+            `Beregnet h_edge: ${d.hEdge === null ? "Ikke tilgjengelig" : `${d.hEdge.toFixed(3)} m`}`,
+            `Delta: ${d.deltaH === null ? "Ikke tilgjengelig" : `${d.deltaH.toFixed(3)} m`}`,
+            `Overflatetype: ${formatSurfaceType(results[i].surfaceType)}`,
+            `Hvilevinkel: ${d.angleOfReposeDeg === null ? "Ikke tilgjengelig" : `${d.angleOfReposeDeg.toFixed(2)}°`}`,
+            `Snittmåling: ${d.avgMeasurement.toFixed(3)} m`,
+            `Volum: ${results[i].volumeM3.toFixed(2)} m³`,
+            `Tonn: ${results[i].tons.toFixed(1)} t`,
+          ].join(" | ");
+          ctx.fillText(line, 70, diagnosticsY);
+          diagnosticsY += 30;
+        }
+
+        return canvas;
+      }
+
+      function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+        if (fill) ctx.fill();
+        if (stroke) ctx.stroke();
+      }
+
+      async function downloadSummaryImage() {
+        const canvas = await buildSummaryImageCanvas();
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const week = getISOWeekInfo(new Date());
+        const date = getEuropeanDateText(new Date()).replace(/\./g, "-");
+        link.href = url;
+        link.download = `silo-summary-${date}-${week.key}.png`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        els.summaryStatus.textContent = "Oversiktsbilde lastet ned.";
+      }
+
+      async function shareSummaryImage() {
+        const canvas = await buildSummaryImageCanvas();
+        const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
+        const week = getISOWeekInfo(new Date());
+        const date = getEuropeanDateText(new Date()).replace(/\./g, "-");
+        const filename = `silo-summary-${date}-${week.key}.png`;
+
+        if (navigator.share && navigator.canShare) {
+          try {
+            const file = new File([blob], filename, { type: "image/png" });
+            const week = getISOWeekInfo(new Date());
+            const dateText = getEuropeanDateText(new Date());
+            const shareLines = [
+              `dato=${dateText}`,
+              `uke=${week.label}`,
+              ...getAllSiloResults().map((result, index) => {
+              const d = result.diagnostics;
+              return `Silo ${index + 1}: Sentermåling ${d.centerMeasurement.toFixed(3)} m, Kantmåling ${d.edgeMeasurement === null ? "Ikke tilgjengelig" : `${d.edgeMeasurement.toFixed(3)} m`}, Beregnet h_edge ${d.hEdge === null ? "Ikke tilgjengelig" : `${d.hEdge.toFixed(3)} m`}, Delta ${d.deltaH === null ? "Ikke tilgjengelig" : `${d.deltaH.toFixed(3)} m`}, Overflatetype ${formatSurfaceType(result.surfaceType)}, Hvilevinkel ${d.angleOfReposeDeg === null ? "Ikke tilgjengelig" : `${d.angleOfReposeDeg.toFixed(2)}°`}, Snittmåling ${d.avgMeasurement.toFixed(3)} m, Volum ${result.volumeM3.toFixed(2)} m³, Tonn ${result.tons.toFixed(1)} t`;
+              }),
+            ];
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                title: "FôrMål Silooversikt",
+                text: shareLines.join("\n"),
+                files: [file],
+              });
+              els.summaryStatus.textContent = "Oversiktsbilde delt.";
+              return;
+            }
+          } catch (_err) {
+            // Fall back to mailto.
+          }
+        }
+
+        const subject = encodeURIComponent("FôrMål Silooversikt");
+        const bodyWeek = getISOWeekInfo(new Date());
+        const bodyDateText = getEuropeanDateText(new Date());
+        const bodyLines = [
+          `dato=${bodyDateText}`,
+          `uke=${bodyWeek.label}`,
+          ...getAllSiloResults().map((result, index) => {
+          const d = result.diagnostics;
+          return `Silo ${index + 1}: Sentermåling ${d.centerMeasurement.toFixed(3)} m, Kantmåling ${d.edgeMeasurement === null ? "Ikke tilgjengelig" : `${d.edgeMeasurement.toFixed(3)} m`}, Beregnet h_edge ${d.hEdge === null ? "Ikke tilgjengelig" : `${d.hEdge.toFixed(3)} m`}, Delta ${d.deltaH === null ? "Ikke tilgjengelig" : `${d.deltaH.toFixed(3)} m`}, Overflatetype ${formatSurfaceType(result.surfaceType)}, Hvilevinkel ${d.angleOfReposeDeg === null ? "Ikke tilgjengelig" : `${d.angleOfReposeDeg.toFixed(2)}°`}, Snittmåling ${d.avgMeasurement.toFixed(3)} m, Volum ${result.volumeM3.toFixed(2)} m³, Tonn ${result.tons.toFixed(1)} t`;
+          }),
+        ];
+        const body = encodeURIComponent(bodyLines.join("\n"));
+        window.location.href = `mailto:?subject=${subject}&body=${body}`;
+        els.summaryStatus.textContent = "E-postappen er åpnet.";
+      }
+
+      function saveSignedWeeklyRecord() {
+        const initials = normalizeInitials(els.signInitialsInput.value);
+        if (!initials) {
+          els.summaryStatus.textContent = "Initialer må fylles ut for å lagre signert registrering.";
+          els.signInitialsInput.focus();
+          return;
+        }
+
+        const week = getISOWeekInfo(new Date());
+        const now = Date.now();
+
+        for (let i = 0; i < SILO_COUNT; i += 1) {
+          const result = calculateSiloResult(state.silos[i]);
+          const row = {
+            weekKey: week.key,
+            weekLabel: week.label,
+            date: now,
+            center_measurement: state.silos[i].distance,
+            edge_measurement: state.silos[i].edgeDistance,
+            h_edge: result.diagnostics.hEdge !== null ? round(result.diagnostics.hEdge, 3) : null,
+            delta: result.diagnostics.deltaH !== null ? round(result.diagnostics.deltaH, 3) : null,
+            auto_surface_type: result.surfaceType,
+            angle_of_repose_deg: result.diagnostics.angleOfReposeDeg !== null ? round(result.diagnostics.angleOfReposeDeg, 2) : null,
+            avg_measurement: round(result.diagnostics.avgMeasurement, 3),
+            final_volume_m3: round(result.volumeM3, 2),
+            final_tons: round(result.tons, 1),
+            bulkDensityKgM3: state.settings.bulkDensityKgM3,
+            initials,
+          };
+
+          const existing = state.weekly[i].findIndex((x) => x.weekKey === week.key);
+          if (existing >= 0) {
+            state.weekly[i][existing] = row;
+          } else {
+            state.weekly[i].push(row);
+          }
+
+          state.weekly[i].sort((a, b) => (a.weekKey < b.weekKey ? 1 : -1));
+          state.weekly[i] = state.weekly[i].slice(0, 52);
+        }
+
+        state.ui.editLocked = true;
+        saveState();
+        els.summaryStatus.textContent = `Signert og lagret for ${week.label} av ${initials}.`;
+      }
+
+      function deleteAllSavedData() {
+        const ok = window.confirm("Er du sikker på at du vil slette øktdata (målinger gjort i denne økten)? Historikk og tidligere lagrede registreringer blir ikke slettet.");
+        if (!ok) return;
+
+        if (sessionBaseline) {
+          state.current = clamp(Number(sessionBaseline.current), 0, SILO_COUNT - 1);
+          state.silos = sessionBaseline.silos.map((silo) => ({ ...silo }));
+          state.settings = { ...sessionBaseline.settings };
+          state.ui.editLocked = Boolean(sessionBaseline.editLocked);
+        } else {
+          state.current = 0;
+          state.silos = Array.from({ length: SILO_COUNT }, defaultSilo);
+          state.settings = { bulkDensityKgM3: DEFAULT_BULK_DENSITY_KG_M3 };
+          state.ui.editLocked = false;
+        }
+        state.ui.sessionSaved = Array.from({ length: SILO_COUNT }, () => false);
+
+        saveState();
+        renderEdit();
+        els.editStatus.textContent = "Øktdata er slettet. Historikk er beholdt.";
+      }
+
+      function bindEvents() {
+        els.siloPicker.addEventListener("click", (event) => {
+          const btn = event.target.closest(".silo-pill");
+          if (!btn) return;
+          const next = clamp(Number(btn.dataset.index), 0, SILO_COUNT - 1);
+          if (next === state.current) return;
+          state.current = next;
+          saveState();
+          renderEdit();
+        });
+
+        els.siloPicker.addEventListener("keydown", (event) => {
+          const btn = event.target.closest(".silo-pill");
+          if (!btn) return;
+          const idx = clamp(Number(btn.dataset.index), 0, SILO_COUNT - 1);
+          let target = idx;
+          if (event.key === "ArrowRight" || event.key === "ArrowDown") target = Math.min(SILO_COUNT - 1, idx + 1);
+          if (event.key === "ArrowLeft" || event.key === "ArrowUp") target = Math.max(0, idx - 1);
+          if (target !== idx) {
+            event.preventDefault();
+            const nextBtn = els.siloPicker.querySelector(`.silo-pill[data-index="${target}"]`);
+            nextBtn?.focus();
+            state.current = target;
+            saveState();
+            renderEdit();
+          }
+        });
+
+        els.prevBtn.addEventListener("click", () => {
+          if (state.current === 0) return;
+          state.current -= 1;
+          saveState();
+          renderEdit();
+        });
+
+        els.nextBtn.addEventListener("click", () => {
+          state.ui.sessionSaved[state.current] = true;
+          if (state.current === SILO_COUNT - 1) {
+            switchToSummary();
+            return;
+          }
+          state.current += 1;
+          saveState();
+          renderEdit();
+        });
+
+        els.distanceInput.addEventListener("input", (event) => {
+          if (state.ui.editLocked) return;
+          const raw = String(event.target.value);
+          const parsed = parseDecimalInput(raw);
+          if (!parsed.valid) return;
+          getCurrentSilo().distance = raw;
+          getCurrentSilo().updatedAt = Date.now();
+          saveState();
+          renderEdit();
+        });
+
+        els.edgeDistanceInput.addEventListener("input", (event) => {
+          if (state.ui.editLocked) return;
+          const raw = String(event.target.value);
+          const parsed = parseDecimalInput(raw);
+          if (!parsed.valid) return;
+          getCurrentSilo().edgeDistance = raw;
+          getCurrentSilo().updatedAt = Date.now();
+          saveState();
+          renderEdit();
+        });
+
+        els.bulkDensitySelect.addEventListener("change", (event) => {
+          if (state.ui.editLocked) return;
+          state.settings.bulkDensityKgM3 = clamp(Number(event.target.value), 100, 2000);
+          saveState();
+          renderEdit();
+        });
+
+        els.unlockEditBtn.addEventListener("click", () => {
+          state.ui.editLocked = false;
+          saveState();
+          renderEdit();
+        });
+
+        els.resetAllBtn.addEventListener("click", deleteAllSavedData);
+
+        els.backBtn.addEventListener("click", switchToEdit);
+        els.downloadImageBtn.addEventListener("click", downloadSummaryImage);
+        els.shareImageBtn.addEventListener("click", shareSummaryImage);
+
+        els.signInitialsInput.addEventListener("input", (event) => {
+          event.target.value = normalizeInitials(event.target.value);
+        });
+
+        els.saveSignedBtn.addEventListener("click", saveSignedWeeklyRecord);
+
+        els.themeToggleBtn.addEventListener("click", () => {
+          state.ui.themeOutdoor = !state.ui.themeOutdoor;
+          saveUiPrefs();
+          applyTheme();
+        });
+
+        window.addEventListener("beforeinstallprompt", (event) => {
+          event.preventDefault();
+          deferredInstallPrompt = event;
+          els.installBtn.hidden = false;
+        });
+
+        els.installBtn.addEventListener("click", async () => {
+          if (!deferredInstallPrompt) {
+            const isiOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            if (isiOS) {
+              window.alert("På iPhone installeres appen via Del-knappen i Safari -> Legg til på Hjem-skjerm.");
+            } else {
+              window.alert("Installering er ikke tilgjengelig akkurat nå. Åpne appen via HTTPS og prøv igjen.");
+            }
+            return;
+          }
+          deferredInstallPrompt.prompt();
+          try { await deferredInstallPrompt.userChoice; } catch (_err) { /* ignore */ }
+          deferredInstallPrompt = null;
+          els.installBtn.hidden = true;
+        });
+      }
+
+      function initSiloPicker() {
+        els.siloPicker.innerHTML = "";
+        for (let i = 0; i < SILO_COUNT; i += 1) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "silo-pill";
+          button.setAttribute("role", "radio");
+          button.setAttribute("aria-checked", "false");
+          button.dataset.index = String(i);
+          button.textContent = `Silo ${i + 1}`;
+          els.siloPicker.appendChild(button);
+        }
+      }
+
+      function init() {
+        loadUiPrefs();
+        applyTheme();
+        loadState();
+        state.ui.sessionSaved = Array.from({ length: SILO_COUNT }, () => false);
+        sessionBaseline = buildSessionBaseline();
+        initSiloPicker();
+        bindEvents();
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("sw.js").catch(() => {});
+        }
+        renderEdit();
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>

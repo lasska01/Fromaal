@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <title>FôrMål – Historikk</title>
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --card: #ffffff;
+      --line: #d5dee9;
+      --text: #152234;
+      --muted: #536377;
+      --brand: #0b6f98;
+      --brand-soft: #d8edf6;
+      --danger: #bb3d3d;
+      --control-bg: #ffffff;
+      --control-border: #9ec3d6;
+      --control-border-soft: #c2cfdd;
+      --control-text: #152234;
+      --surface-soft: #fbfdff;
+      --table-bg: #ffffff;
+      --table-head-bg: #f5f9fd;
+      --table-head-text: #2e435a;
+      --table-row-hover: #f8fbff;
+      --button-bg: var(--brand-soft);
+      --button-text: var(--brand);
+      --danger-bg: #fff6f6;
+      --danger-border: #e4b7b7;
+      --danger-text: var(--danger);
+      --radius: 16px;
+      --shadow: 0 10px 24px rgba(15, 23, 42, 0.09);
+      --font: "SF Pro Text", "Helvetica Neue", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background: linear-gradient(180deg, #edf2f7 0%, #f7fafe 100%);
+      padding: 12px;
+    }
+
+    body.theme-outdoor {
+      --bg: #0f1720;
+      --card: #111d29;
+      --line: #2a3a4a;
+      --text: #eaf4ff;
+      --muted: #b4c6d8;
+      --brand: #7fd8ff;
+      --brand-soft: #1a3344;
+      --control-bg: #152737;
+      --control-border: #4b6680;
+      --control-border-soft: #3f556b;
+      --control-text: #eaf4ff;
+      --surface-soft: #16293a;
+      --table-bg: #112131;
+      --table-head-bg: #1a2d40;
+      --table-head-text: #d8ecff;
+      --table-row-hover: #1c3043;
+      --button-bg: #21445c;
+      --button-text: #dff3ff;
+      --danger-bg: #3a1f24;
+      --danger-border: #a35d67;
+      --danger-text: #ffd7dc;
+      --shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+      background: linear-gradient(180deg, #0f1720 0%, #101b27 100%);
+    }
+
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      gap: 12px;
+      padding-bottom: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .top h1 {
+      margin: 0;
+      color: var(--brand);
+      font-size: clamp(1.15rem, 2.3vw, 1.5rem);
+    }
+
+    .top p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn,
+    .input,
+    .select {
+      min-height: 42px;
+      border: 1px solid var(--control-border);
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 13px;
+      text-decoration: none;
+      color: var(--button-text);
+      background: var(--button-bg);
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .btn:focus-visible,
+    .input:focus-visible,
+    .select:focus-visible,
+    .chip:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 2px;
+    }
+
+    .btn.clear {
+      border-color: var(--danger-border);
+      background: var(--danger-bg);
+      color: var(--danger-text);
+    }
+
+    .input,
+    .select {
+      width: 100%;
+      padding: 10px;
+      border-color: var(--control-border-soft);
+      color: var(--control-text);
+      background: var(--control-bg);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+      align-items: end;
+    }
+
+    .field label {
+      display: block;
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .silo-multi {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 7px;
+      border: 1px solid var(--control-border-soft);
+      border-radius: 12px;
+      background: var(--control-bg);
+      min-height: 42px;
+      align-items: center;
+    }
+
+    .silo-opt {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 1px solid var(--control-border-soft);
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--control-text);
+      background: var(--surface-soft);
+    }
+
+    .silo-opt input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--brand);
+      margin: 0;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .chip {
+      border: 1px solid var(--control-border-soft);
+      border-radius: 999px;
+      background: var(--surface-soft);
+      color: var(--button-text);
+      padding: 6px 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .status {
+      color: var(--muted);
+      font-size: 0.85rem;
+      min-height: 1.2em;
+      margin-top: 8px;
+    }
+
+    .system-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .system-badge {
+      min-height: 42px;
+      border: 1px solid var(--control-border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--button-text);
+      background: var(--surface-soft);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      background: var(--table-bg);
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--table-head-bg);
+      color: var(--table-head-text);
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    th button {
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 0;
+      text-align: left;
+    }
+
+    tr[data-row] { cursor: pointer; }
+    tr[data-row]:hover { background: var(--table-row-hover); }
+    tr[data-row]:focus { outline: 2px solid var(--brand); outline-offset: -2px; }
+
+    .pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 9px;
+      flex-wrap: wrap;
+    }
+
+    .pagination .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .trends {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .chart-card h3,
+    .forecast-card h3 {
+      margin: 0 0 8px;
+      color: var(--brand);
+      font-size: 1rem;
+    }
+
+    .chart-wrap {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-soft);
+      padding: 8px;
+      position: relative;
+    }
+
+    .chart {
+      width: 100%;
+      height: 220px;
+      display: block;
+    }
+
+    .tooltip {
+      position: absolute;
+      pointer-events: none;
+      background: rgba(21, 34, 52, 0.92);
+      color: #f6fbff;
+      font-size: 0.76rem;
+      border-radius: 8px;
+      padding: 6px 8px;
+      transform: translate(-50%, -120%);
+      white-space: nowrap;
+      display: none;
+    }
+
+    .forecast-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      align-items: end;
+      margin-bottom: 8px;
+    }
+
+    .forecast-out {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-soft);
+      padding: 10px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .forecast-out p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .forecast-out .meta {
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 16px 10px;
+      border: 1px dashed var(--control-border-soft);
+      border-radius: 12px;
+      background: var(--surface-soft);
+      font-size: 0.92rem;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(10, 17, 26, 0.45);
+      padding: 12px;
+      z-index: 20;
+    }
+
+    .modal.open { display: grid; }
+
+    .modal-card {
+      width: min(720px, 100%);
+      max-height: 86vh;
+      overflow: auto;
+      background: var(--card);
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 14px;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 12px;
+      font-size: 0.86rem;
+      margin-top: 8px;
+    }
+
+    .detail-grid div { border-bottom: 1px dashed var(--line); padding-bottom: 5px; }
+    .detail-grid strong { color: var(--text); }
+
+    @media (max-width: 980px) {
+      .filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .trends { grid-template-columns: 1fr; }
+      .forecast-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="card top">
+      <div>
+        <h1>Historikk</h1>
+        <p>Historisk database med søk, filtrering, eksport, trender og påfyllingsprognose.</p>
+      </div>
+      <div class="actions">
+        <a class="btn" href="index.html">Tilbake til måling</a>
+      </div>
+      <div class="system-bar">
+        <div id="networkBadge" class="system-badge">Nett: online</div>
+        <button id="installBtn" class="btn" type="button" hidden>Installer app</button>
+        <button id="themeToggleBtn" class="btn" type="button">Mørk utendørsmodus</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="filters">
+        <div class="field" style="grid-column: span 2;">
+          <label for="searchInput">Søk i alle felt</label>
+          <input id="searchInput" class="input" type="search" placeholder="Søk på silo, operatør, notater, verdier..." />
+        </div>
+        <div class="field">
+          <label for="dateFromInput">Fra dato</label>
+          <input id="dateFromInput" class="input" type="date" />
+        </div>
+        <div class="field">
+          <label for="dateToInput">Til dato</label>
+          <input id="dateToInput" class="input" type="date" />
+        </div>
+        <div class="field" style="grid-column: span 2;">
+          <label for="siloMulti">Silo (flervalg)</label>
+          <div id="siloMulti" class="silo-multi" aria-label="Silo-filter flervalg"></div>
+        </div>
+        <div class="field">
+          <label for="kgMinInput">Kg min</label>
+          <input id="kgMinInput" class="input" type="number" min="0" step="1" />
+        </div>
+        <div class="field">
+          <label for="kgMaxInput">Kg maks</label>
+          <input id="kgMaxInput" class="input" type="number" min="0" step="1" />
+        </div>
+      </div>
+
+      <div class="chips">
+        <button class="chip" data-range="7" type="button">Siste 7 dager</button>
+        <button class="chip" data-range="30" type="button">Siste 30 dager</button>
+        <button class="chip" data-range="90" type="button">Siste 90 dager</button>
+      </div>
+
+      <div class="actions" style="margin-top:10px;">
+        <button id="clearFiltersBtn" class="btn clear" type="button">Nullstill filtre</button>
+        <button id="exportCsvBtn" class="btn" type="button">Eksporter CSV</button>
+        <button id="exportPdfBtn" class="btn" type="button">Eksporter PDF</button>
+      </div>
+
+      <p id="loadingState" class="status">Laster historikk...</p>
+      <p id="errorState" class="status" style="color:#b44;"></p>
+    </section>
+
+    <section class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th><button type="button" data-sort="createdAt">Dato / tid</button></th>
+              <th><button type="button" data-sort="siloId">Silo</button></th>
+              <th><button type="button" data-sort="radius">Radius (r)</button></th>
+              <th><button type="button" data-sort="laserL">Laseravstand (L)</button></th>
+              <th><button type="button" data-sort="heightH">Beregnet høyde (h)</button></th>
+              <th><button type="button" data-sort="volumeM3">Volum (m³)</button></th>
+              <th><button type="button" data-sort="estimatedKg">Estimert kg</button></th>
+              <th><button type="button" data-sort="operator">Operatør / Notater</button></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div id="totalCount" class="status"></div>
+        <div class="controls">
+          <label for="rowsPerPageSelect" style="font-size:0.82rem;color:var(--muted);font-weight:700;">Rader per side</label>
+          <select id="rowsPerPageSelect" class="select" style="width:80px;">
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+            <option value="50">50</option>
+          </select>
+          <button id="prevPageBtn" class="btn" type="button">Forrige</button>
+          <button id="nextPageBtn" class="btn" type="button">Neste</button>
+        </div>
+      </div>
+      <div id="emptyState" class="empty" style="display:none;">Ingen historikkdata matcher valgt filter.</div>
+    </section>
+
+    <section class="card trends">
+      <article class="chart-card">
+        <h3>Trender – Estimert kg over tid</h3>
+        <div class="chart-wrap">
+          <canvas id="kgTrendChart" class="chart"></canvas>
+          <div id="kgTooltip" class="tooltip"></div>
+        </div>
+      </article>
+      <article class="chart-card">
+        <h3>Trender – Estimert daglig forbruk</h3>
+        <div class="chart-wrap">
+          <canvas id="consumptionChart" class="chart"></canvas>
+        </div>
+      </article>
+    </section>
+
+    <section class="card forecast-card">
+      <h3>Påfyllingsprognose</h3>
+      <div class="forecast-grid">
+        <div class="field">
+          <label for="thresholdSelect">Terskel</label>
+          <select id="thresholdSelect" class="select">
+            <option value="20">20% av kapasitet</option>
+            <option value="10">10% av kapasitet</option>
+            <option value="custom">Egendefinert kg</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="customKgInput">Egendefinert terskel (kg)</label>
+          <input id="customKgInput" class="input" type="number" min="0" step="1" disabled />
+        </div>
+        <div class="field">
+          <label for="manualBurnInput">Manuell daglig bruk (kg/dag, valgfri)</label>
+          <input id="manualBurnInput" class="input" type="number" min="0" step="1" placeholder="Auto fra historikk" />
+        </div>
+        <div class="field">
+          <label for="forecastWindowSelect">Prognosevindu</label>
+          <select id="forecastWindowSelect" class="select">
+            <option value="7">Siste 7 dager</option>
+            <option value="14" selected>Siste 14 dager</option>
+            <option value="30">Siste 30 dager</option>
+          </select>
+        </div>
+      </div>
+      <div id="forecastOut" class="forecast-out"></div>
+    </section>
+  </main>
+
+  <div id="detailModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="top" style="margin-bottom:8px;">
+        <h2 style="margin:0;color:var(--brand);font-size:1.08rem;">Detaljvisning</h2>
+        <button id="closeDetailBtn" class="btn" type="button">Lukk</button>
+      </div>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "pellet_silo_estimator_v5";
+      const UI_PREFS_KEY = "formaal_ui_prefs_v1";
+      const RADIUS_M = 2;
+      const RECT_WIDTH_M = 4.0;
+      const RECT_DEPTH_M = 5.46;
+      const RECT_HEIGHT_M = 5.712;
+      const PYRAMID_VOLUME_M3 = 17.35;
+      const MAX_VOLUME_M3 = PYRAMID_VOLUME_M3 + (RECT_WIDTH_M * RECT_DEPTH_M * RECT_HEIGHT_M);
+
+      const state = {
+        all: [],
+        filtered: [],
+        chartPoints: [],
+        page: 1,
+        rowsPerPage: 20,
+        sortKey: "createdAt",
+        sortDir: "desc",
+        filters: {
+          search: "",
+          dateFrom: "",
+          dateTo: "",
+          silos: [],
+          kgMin: "",
+          kgMax: "",
+        },
+      };
+
+      const els = {
+        searchInput: document.getElementById("searchInput"),
+        dateFromInput: document.getElementById("dateFromInput"),
+        dateToInput: document.getElementById("dateToInput"),
+        siloMulti: document.getElementById("siloMulti"),
+        kgMinInput: document.getElementById("kgMinInput"),
+        kgMaxInput: document.getElementById("kgMaxInput"),
+        networkBadge: document.getElementById("networkBadge"),
+        installBtn: document.getElementById("installBtn"),
+        themeToggleBtn: document.getElementById("themeToggleBtn"),
+        clearFiltersBtn: document.getElementById("clearFiltersBtn"),
+        exportCsvBtn: document.getElementById("exportCsvBtn"),
+        exportPdfBtn: document.getElementById("exportPdfBtn"),
+        loadingState: document.getElementById("loadingState"),
+        errorState: document.getElementById("errorState"),
+        tableBody: document.getElementById("tableBody"),
+        totalCount: document.getElementById("totalCount"),
+        rowsPerPageSelect: document.getElementById("rowsPerPageSelect"),
+        prevPageBtn: document.getElementById("prevPageBtn"),
+        nextPageBtn: document.getElementById("nextPageBtn"),
+        emptyState: document.getElementById("emptyState"),
+        kgTrendChart: document.getElementById("kgTrendChart"),
+        kgTooltip: document.getElementById("kgTooltip"),
+        consumptionChart: document.getElementById("consumptionChart"),
+        thresholdSelect: document.getElementById("thresholdSelect"),
+        customKgInput: document.getElementById("customKgInput"),
+        manualBurnInput: document.getElementById("manualBurnInput"),
+        forecastWindowSelect: document.getElementById("forecastWindowSelect"),
+        forecastOut: document.getElementById("forecastOut"),
+        detailModal: document.getElementById("detailModal"),
+        detailContent: document.getElementById("detailContent"),
+        closeDetailBtn: document.getElementById("closeDetailBtn"),
+        chips: Array.from(document.querySelectorAll("[data-range]")),
+        sortButtons: Array.from(document.querySelectorAll("[data-sort]")),
+      };
+
+      let deferredInstallPrompt = null;
+
+      function clamp(v, min, max) {
+        return Math.max(min, Math.min(max, v));
+      }
+
+      function toNumber(value) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : NaN;
+      }
+
+      function safeNumber(value, fallback = NaN) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : fallback;
+      }
+
+      function parseDateMs(value) {
+        if (!value) return NaN;
+        const t = new Date(value).getTime();
+        return Number.isFinite(t) ? t : NaN;
+      }
+
+      function fmtDateTime(ms) {
+        if (!Number.isFinite(ms)) return "-";
+        const d = new Date(ms);
+        return `${d.toLocaleDateString("nb-NO")} ${d.toLocaleTimeString("nb-NO", { hour: "2-digit", minute: "2-digit" })}`;
+      }
+
+      function fmtNumber(v, digits = 1) {
+        if (!Number.isFinite(v)) return "-";
+        return v.toLocaleString("nb-NO", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+      }
+
+      function normalizeSurface(s) {
+        if (s === "concave" || s === "Konkav") return "Konkav";
+        if (s === "convex" || s === "Konveks") return "Konveks";
+        return "Flat";
+      }
+
+      function loadUiPrefs() {
+        try {
+          const raw = localStorage.getItem(UI_PREFS_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          document.body.classList.toggle("theme-outdoor", Boolean(parsed.themeOutdoor));
+        } catch (_err) {
+          // ignore invalid prefs
+        }
+      }
+
+      function saveUiPrefs(themeOutdoor) {
+        localStorage.setItem(UI_PREFS_KEY, JSON.stringify({ themeOutdoor }));
+      }
+
+      function applyThemeButtonText() {
+        const active = document.body.classList.contains("theme-outdoor");
+        els.themeToggleBtn.textContent = active ? "Lys modus" : "Mørk utendørsmodus";
+      }
+
+      function updateNetworkBadge() {
+        const online = navigator.onLine;
+        els.networkBadge.textContent = online ? "Nett: online" : "Nett: offline (lagrer lokalt)";
+        els.networkBadge.style.borderColor = online ? "#9ec3d6" : "#d89a9a";
+        els.networkBadge.style.color = online ? "#285372" : "#8f2f2f";
+      }
+
+      function loadRecords() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        const rows = Array.isArray(parsed.weekly) ? parsed.weekly : [];
+        const records = [];
+
+        rows.forEach((siloRows, siloIndex) => {
+          if (!Array.isArray(siloRows)) return;
+          siloRows.forEach((row, rowIndex) => {
+            const createdAt = safeNumber(row.created_at ?? row.date, NaN);
+            const center = safeNumber(row.center_measurement ?? row.distance, NaN);
+            const edge = safeNumber(row.edge_measurement ?? row.edgeDistance, NaN);
+            const hEdge = safeNumber(row.h_edge, Number.isFinite(edge) && edge > RADIUS_M ? Math.sqrt((edge ** 2) - (RADIUS_M ** 2)) : NaN);
+            const volumeM3 = safeNumber(row.final_volume_m3 ?? row.volumeM3, NaN);
+            const tons = safeNumber(row.final_tons ?? row.tons, NaN);
+            const estimatedKg = safeNumber(row.estimatedKg, Number.isFinite(tons) ? tons * 1000 : NaN);
+            const operator = String(row.initials ?? row.operator ?? "").trim();
+            const notes = String(row.notes ?? row.note ?? "").trim();
+            const bulkDensity = safeNumber(row.bulkDensityKgM3, 650);
+            const autoSurface = normalizeSurface(row.auto_surface_type ?? row.surface ?? "Flat");
+            const angle = safeNumber(row.angle_of_repose_deg ?? row.angleOfReposeDeg, NaN);
+            const avgMeasurement = safeNumber(row.avg_measurement ?? row.avgMeasurement, NaN);
+            const laserL = Number.isFinite(edge) ? edge : center;
+            const heightH = Number.isFinite(hEdge) ? hEdge : NaN;
+            const id = String(row.id ?? `${siloIndex + 1}-${row.weekKey ?? createdAt}-${rowIndex}`);
+            const siloId = siloIndex + 1;
+
+            records.push({
+              id,
+              createdAt,
+              siloId,
+              radius: RADIUS_M,
+              centerMeasurement: center,
+              edgeMeasurement: edge,
+              laserL,
+              heightH,
+              volumeM3,
+              estimatedKg,
+              tons,
+              operator,
+              notes,
+              autoSurface,
+              angle,
+              avgMeasurement,
+              bulkDensity,
+              raw: row,
+            });
+          });
+        });
+        return records;
+      }
+
+      function initSiloFilter(records) {
+        const silos = Array.from(new Set(records.map((r) => r.siloId))).sort((a, b) => a - b);
+        state.filters.silos = silos.slice();
+        els.siloMulti.innerHTML = silos.map((s) => `
+          <label class="silo-opt">
+            <input type="checkbox" value="${s}" checked />
+            <span>Silo ${s}</span>
+          </label>
+        `).join("");
+      }
+
+      function applyFilters(records) {
+        const q = state.filters.search.trim().toLowerCase();
+        const fromMs = parseDateMs(state.filters.dateFrom ? `${state.filters.dateFrom}T00:00:00` : "");
+        const toMs = parseDateMs(state.filters.dateTo ? `${state.filters.dateTo}T23:59:59` : "");
+        const kgMin = toNumber(state.filters.kgMin);
+        const kgMax = toNumber(state.filters.kgMax);
+
+        return records.filter((r) => {
+          if (state.filters.silos.length && !state.filters.silos.includes(r.siloId)) return false;
+          if (Number.isFinite(fromMs) && (!Number.isFinite(r.createdAt) || r.createdAt < fromMs)) return false;
+          if (Number.isFinite(toMs) && (!Number.isFinite(r.createdAt) || r.createdAt > toMs)) return false;
+          if (Number.isFinite(kgMin) && (!Number.isFinite(r.estimatedKg) || r.estimatedKg < kgMin)) return false;
+          if (Number.isFinite(kgMax) && (!Number.isFinite(r.estimatedKg) || r.estimatedKg > kgMax)) return false;
+          if (q) {
+            const blob = [
+              fmtDateTime(r.createdAt),
+              `silo ${r.siloId}`,
+              r.operator,
+              r.notes,
+              r.autoSurface,
+              r.centerMeasurement,
+              r.edgeMeasurement,
+              r.volumeM3,
+              r.estimatedKg,
+            ].join(" ").toLowerCase();
+            if (!blob.includes(q)) return false;
+          }
+          return true;
+        });
+      }
+
+      function sortRecords(records) {
+        const { sortKey, sortDir } = state;
+        const dir = sortDir === "asc" ? 1 : -1;
+        return [...records].sort((a, b) => {
+          const av = a[sortKey];
+          const bv = b[sortKey];
+          if (typeof av === "string" || typeof bv === "string") {
+            return String(av ?? "").localeCompare(String(bv ?? ""), "nb") * dir;
+          }
+          const an = Number.isFinite(av) ? av : -Infinity;
+          const bn = Number.isFinite(bv) ? bv : -Infinity;
+          return (an - bn) * dir;
+        });
+      }
+
+      function paged(records) {
+        const totalPages = Math.max(1, Math.ceil(records.length / state.rowsPerPage));
+        state.page = clamp(state.page, 1, totalPages);
+        const from = (state.page - 1) * state.rowsPerPage;
+        return {
+          totalPages,
+          rows: records.slice(from, from + state.rowsPerPage),
+        };
+      }
+
+      function updateTotal(records, totalPages) {
+        els.totalCount.textContent = `${records.length} treff | Side ${state.page} av ${totalPages}`;
+      }
+
+      function renderTable(records) {
+        const { rows, totalPages } = paged(records);
+        els.tableBody.innerHTML = "";
+
+        rows.forEach((r) => {
+          const tr = document.createElement("tr");
+          tr.setAttribute("data-row", "1");
+          tr.tabIndex = 0;
+          tr.innerHTML = `
+            <td>${fmtDateTime(r.createdAt)}</td>
+            <td>Silo ${r.siloId}</td>
+            <td>${fmtNumber(r.radius, 2)}</td>
+            <td>${fmtNumber(r.laserL, 3)}</td>
+            <td>${fmtNumber(r.heightH, 3)}</td>
+            <td>${fmtNumber(r.volumeM3, 2)}</td>
+            <td>${fmtNumber(r.estimatedKg, 1)}</td>
+            <td>${(r.operator || "-")}${r.notes ? ` / ${r.notes}` : ""}</td>
+          `;
+          tr.addEventListener("click", () => openDetail(r));
+          tr.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              openDetail(r);
+            }
+          });
+          els.tableBody.appendChild(tr);
+        });
+
+        els.emptyState.style.display = records.length ? "none" : "block";
+        updateTotal(records, totalPages);
+        els.prevPageBtn.disabled = state.page <= 1;
+        els.nextPageBtn.disabled = state.page >= totalPages;
+      }
+
+      function openDetail(r) {
+        const detail = [
+          ["ID", r.id],
+          ["Dato / tid", fmtDateTime(r.createdAt)],
+          ["Silo", `Silo ${r.siloId}`],
+          ["Radius (r)", `${fmtNumber(r.radius, 2)} m`],
+          ["Senter-måling", `${fmtNumber(r.centerMeasurement, 3)} m`],
+          ["Laseravstand (L)", `${fmtNumber(r.laserL, 3)} m`],
+          ["Beregnet høyde (h)", `${fmtNumber(r.heightH, 3)} m`],
+          ["Gjennomsnittsmåling", `${fmtNumber(r.avgMeasurement, 3)} m`],
+          ["Overflate", r.autoSurface],
+          ["Hvilevinkel", `${fmtNumber(r.angle, 2)}°`],
+          ["Volum", `${fmtNumber(r.volumeM3, 2)} m³`],
+          ["Estimert tonn", `${fmtNumber(r.tons, 1)} t`],
+          ["Estimert kg", `${fmtNumber(r.estimatedKg, 1)} kg`],
+          ["Bulktetthet", `${fmtNumber(r.bulkDensity, 0)} kg/m³`],
+          ["Operatør", r.operator || "-"],
+          ["Notater", r.notes || "-"],
+        ];
+
+        els.detailContent.innerHTML = `
+          <div class="detail-grid">
+            ${detail.map(([k, v]) => `<div><strong>${k}</strong><br>${v}</div>`).join("")}
+          </div>
+        `;
+        els.detailModal.classList.add("open");
+        els.detailModal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeDetail() {
+        els.detailModal.classList.remove("open");
+        els.detailModal.setAttribute("aria-hidden", "true");
+      }
+
+      function chartCanvasContext(canvas) {
+        const ctx = canvas.getContext("2d");
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.max(2, Math.round(rect.width * dpr));
+        canvas.height = Math.max(2, Math.round(rect.height * dpr));
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        return { ctx, w: rect.width, h: rect.height };
+      }
+
+      function renderKgChart(records) {
+        const points = [...records]
+          .filter((r) => Number.isFinite(r.createdAt) && Number.isFinite(r.estimatedKg))
+          .sort((a, b) => a.createdAt - b.createdAt);
+
+        const { ctx, w, h } = chartCanvasContext(els.kgTrendChart);
+        ctx.clearRect(0, 0, w, h);
+
+        if (!points.length) {
+          ctx.fillStyle = "#66768a";
+          ctx.font = "13px 'SF Pro Text', 'Segoe UI', sans-serif";
+          ctx.fillText("Ingen data for valgt filter.", 14, 24);
+          state.chartPoints = [];
+          return;
+        }
+
+        const pad = { l: 44, r: 14, t: 14, b: 28 };
+        const minX = points[0].createdAt;
+        const maxX = points[points.length - 1].createdAt || minX + 1;
+        const ys = points.map((p) => p.estimatedKg);
+        const minY = Math.min(...ys);
+        const maxY = Math.max(...ys);
+        const spanY = Math.max(1, maxY - minY);
+
+        function sx(x) {
+          const p = (x - minX) / Math.max(1, (maxX - minX));
+          return pad.l + p * (w - pad.l - pad.r);
+        }
+        function sy(y) {
+          const p = (y - minY) / spanY;
+          return h - pad.b - p * (h - pad.t - pad.b);
+        }
+
+        ctx.strokeStyle = "#d8e3ef";
+        ctx.lineWidth = 1;
+        for (let i = 0; i < 4; i += 1) {
+          const y = pad.t + ((h - pad.t - pad.b) / 3) * i;
+          ctx.beginPath();
+          ctx.moveTo(pad.l, y);
+          ctx.lineTo(w - pad.r, y);
+          ctx.stroke();
+        }
+
+        ctx.strokeStyle = "#1f90bd";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        points.forEach((p, i) => {
+          const x = sx(p.createdAt);
+          const y = sy(p.estimatedKg);
+          if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        state.chartPoints = points.map((p) => ({
+          x: sx(p.createdAt),
+          y: sy(p.estimatedKg),
+          date: fmtDateTime(p.createdAt),
+          kg: p.estimatedKg,
+        }));
+
+        ctx.fillStyle = "#0b6f98";
+        state.chartPoints.forEach((p) => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2.6, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      function renderConsumptionChart(records) {
+        const bySilo = new Map();
+        records
+          .filter((r) => Number.isFinite(r.createdAt) && Number.isFinite(r.estimatedKg))
+          .forEach((r) => {
+            if (!bySilo.has(r.siloId)) bySilo.set(r.siloId, []);
+            bySilo.get(r.siloId).push(r);
+          });
+
+        const deltas = [];
+        bySilo.forEach((arr, siloId) => {
+          arr.sort((a, b) => a.createdAt - b.createdAt);
+          for (let i = 1; i < arr.length; i += 1) {
+            const prev = arr[i - 1];
+            const curr = arr[i];
+            const dtDays = (curr.createdAt - prev.createdAt) / 86400000;
+            if (dtDays <= 0) continue;
+            const daily = (prev.estimatedKg - curr.estimatedKg) / dtDays;
+            deltas.push({
+              createdAt: curr.createdAt,
+              daily,
+              siloId,
+            });
+          }
+        });
+        deltas.sort((a, b) => a.createdAt - b.createdAt);
+
+        const { ctx, w, h } = chartCanvasContext(els.consumptionChart);
+        ctx.clearRect(0, 0, w, h);
+
+        if (!deltas.length) {
+          ctx.fillStyle = "#66768a";
+          ctx.font = "13px 'SF Pro Text', 'Segoe UI', sans-serif";
+          ctx.fillText("For lite data til forbrukstrend.", 14, 24);
+          return;
+        }
+
+        const pad = { l: 44, r: 14, t: 14, b: 28 };
+        const maxAbs = Math.max(1, ...deltas.map((d) => Math.abs(d.daily)));
+        const baseY = pad.t + (h - pad.t - pad.b) * 0.5;
+        const barW = Math.max(4, (w - pad.l - pad.r) / Math.max(10, deltas.length) - 2);
+
+        ctx.strokeStyle = "#d8e3ef";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(pad.l, baseY);
+        ctx.lineTo(w - pad.r, baseY);
+        ctx.stroke();
+
+        deltas.forEach((d, i) => {
+          const x = pad.l + i * (barW + 2);
+          const hh = (Math.abs(d.daily) / maxAbs) * (h - pad.t - pad.b) * 0.45;
+          const y = d.daily >= 0 ? baseY - hh : baseY;
+          ctx.fillStyle = d.daily >= 0 ? "#2b9d61" : "#d07b23";
+          ctx.fillRect(x, y, barW, hh);
+        });
+      }
+
+      function bindTooltip() {
+        els.kgTrendChart.addEventListener("mousemove", (e) => {
+          if (!state.chartPoints.length) {
+            els.kgTooltip.style.display = "none";
+            return;
+          }
+          const rect = els.kgTrendChart.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          let nearest = null;
+          let best = Infinity;
+          state.chartPoints.forEach((p) => {
+            const d = Math.hypot(x - p.x, y - p.y);
+            if (d < best) {
+              best = d;
+              nearest = p;
+            }
+          });
+          if (!nearest || best > 24) {
+            els.kgTooltip.style.display = "none";
+            return;
+          }
+          els.kgTooltip.style.display = "block";
+          els.kgTooltip.textContent = `${nearest.date} | ${fmtNumber(nearest.kg, 1)} kg`;
+          els.kgTooltip.style.left = `${nearest.x}px`;
+          els.kgTooltip.style.top = `${nearest.y}px`;
+        });
+        els.kgTrendChart.addEventListener("mouseleave", () => {
+          els.kgTooltip.style.display = "none";
+        });
+      }
+
+      function computeForecast(records) {
+        const nowRecords = [...records]
+          .filter((r) => Number.isFinite(r.createdAt) && Number.isFinite(r.estimatedKg))
+          .sort((a, b) => a.createdAt - b.createdAt);
+
+        if (!nowRecords.length) {
+          return { message: "Ingen data tilgjengelig for prognose." };
+        }
+
+        const latest = nowRecords[nowRecords.length - 1];
+        const density = Number.isFinite(latest.bulkDensity) ? latest.bulkDensity : 650;
+        const thresholdMode = els.thresholdSelect.value;
+        const custom = toNumber(els.customKgInput.value);
+        const forecastWindowDays = Number(els.forecastWindowSelect.value || 14);
+        const thresholdKg = thresholdMode === "custom"
+          ? custom
+          : (MAX_VOLUME_M3 * density) * (Number(thresholdMode) / 100);
+
+        if (!Number.isFinite(thresholdKg) || thresholdKg < 0) {
+          return { message: "Ugyldig terskelverdi for prognose." };
+        }
+
+        const manualBurn = toNumber(els.manualBurnInput.value);
+        let burnRate = manualBurn;
+        let intervals = 0;
+
+        if (!Number.isFinite(burnRate) || burnRate <= 0) {
+          const latestMs = nowRecords[nowRecords.length - 1].createdAt;
+          const windowStart = latestMs - (forecastWindowDays * 86400000);
+          const recent = nowRecords.filter((r) => r.createdAt >= windowStart);
+          const rates = [];
+          for (let i = 1; i < recent.length; i += 1) {
+            const prev = recent[i - 1];
+            const curr = recent[i];
+            const days = (curr.createdAt - prev.createdAt) / 86400000;
+            if (days <= 0) continue;
+            const rate = (prev.estimatedKg - curr.estimatedKg) / days;
+            if (rate > 0) rates.push(rate);
+          }
+          intervals = rates.length;
+          burnRate = rates.length ? rates.reduce((a, b) => a + b, 0) / rates.length : NaN;
+        } else {
+          intervals = nowRecords.length;
+        }
+
+        if (!Number.isFinite(burnRate) || burnRate <= 0) {
+          return {
+            message: "Kan ikke beregne forbrukstakt fra valgt datasett.",
+            meta: `Basert på siste ${intervals} målepunkter.`,
+          };
+        }
+
+        const currentKg = latest.estimatedKg;
+        const daysRemaining = (currentKg - thresholdKg) / burnRate;
+        const limitedDays = clamp(daysRemaining, 0, 3650);
+        const projectedDate = new Date(latest.createdAt + (limitedDays * 86400000));
+        const sourceCount = Math.min(nowRecords.length, Math.max(1, intervals + 1));
+
+        return {
+          currentKg,
+          thresholdKg,
+          burnRate,
+          daysRemaining: limitedDays,
+          projectedDate,
+          meta: `Basert på siste ${sourceCount} målinger (${forecastWindowDays} dagers vindu).`,
+        };
+      }
+
+      function renderForecast(records) {
+        els.customKgInput.disabled = els.thresholdSelect.value !== "custom";
+        const f = computeForecast(records);
+        if (f.message) {
+          els.forecastOut.innerHTML = `<p>${f.message}</p>${f.meta ? `<p class="meta">${f.meta}</p>` : ""}`;
+          return;
+        }
+        els.forecastOut.innerHTML = `
+          <p><strong>Estimert dager igjen:</strong> ${fmtNumber(f.daysRemaining, 1)} dager</p>
+          <p><strong>Forventet påfyllingsdato:</strong> ${f.projectedDate.toLocaleDateString("nb-NO")}</p>
+          <p><strong>Nåværende nivå:</strong> ${fmtNumber(f.currentKg, 1)} kg</p>
+          <p><strong>Terskel:</strong> ${fmtNumber(f.thresholdKg, 1)} kg</p>
+          <p><strong>Estimert forbruk:</strong> ${fmtNumber(f.burnRate, 1)} kg/dag</p>
+          <p class="meta">${f.meta}</p>
+        `;
+      }
+
+      function exportCsv(records) {
+        if (!records.length) return;
+        const headers = [
+          "ID",
+          "Dato og tid",
+          "Silo",
+          "Radius (m)",
+          "Laseravstand L (m)",
+          "Beregnet høyde h (m)",
+          "Volum (m3)",
+          "Estimert kg",
+          "Operatør",
+          "Notater",
+          "Sentermåling (m)",
+          "Kantmåling (m)",
+          "Overflatetype",
+          "Hvilevinkel (grader)",
+          "Gjennomsnittsmåling (m)",
+        ];
+        const rows = records.map((r) => [
+          r.id,
+          fmtDateTime(r.createdAt),
+          `Silo ${r.siloId}`,
+          fmtNumber(r.radius, 2),
+          fmtNumber(r.laserL, 3),
+          fmtNumber(r.heightH, 3),
+          fmtNumber(r.volumeM3, 2),
+          fmtNumber(r.estimatedKg, 1),
+          r.operator || "",
+          r.notes || "",
+          fmtNumber(r.centerMeasurement, 3),
+          fmtNumber(r.edgeMeasurement, 3),
+          r.autoSurface,
+          fmtNumber(r.angle, 2),
+          fmtNumber(r.avgMeasurement, 3),
+        ]);
+        const csv = [headers, ...rows]
+          .map((row) => row.map((cell) => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(","))
+          .join("\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `historikk-${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function getFilterSummary() {
+        const parts = [];
+        if (state.filters.dateFrom) parts.push(`Fra: ${state.filters.dateFrom}`);
+        if (state.filters.dateTo) parts.push(`Til: ${state.filters.dateTo}`);
+        if (state.filters.silos.length) parts.push(`Silo: ${state.filters.silos.join(", ")}`);
+        if (state.filters.search) parts.push(`Søk: "${state.filters.search}"`);
+        if (state.filters.kgMin) parts.push(`Kg min: ${state.filters.kgMin}`);
+        if (state.filters.kgMax) parts.push(`Kg maks: ${state.filters.kgMax}`);
+        return parts.length ? parts.join(" | ") : "Ingen filtre";
+      }
+
+      function exportPdf(records) {
+        if (!records.length) return;
+        const chartImg = els.kgTrendChart.toDataURL("image/png");
+        const tableRows = records.map((r) => `
+          <tr>
+            <td>${fmtDateTime(r.createdAt)}</td>
+            <td>Silo ${r.siloId}</td>
+            <td>${fmtNumber(r.laserL, 3)}</td>
+            <td>${fmtNumber(r.heightH, 3)}</td>
+            <td>${fmtNumber(r.volumeM3, 2)}</td>
+            <td>${fmtNumber(r.estimatedKg, 1)}</td>
+            <td>${r.operator || "-"}</td>
+          </tr>
+        `).join("");
+
+        const win = window.open("", "_blank");
+        if (!win) return;
+        win.document.write(`
+          <html lang="no">
+          <head>
+            <title>FôrMål – Historikkrapport</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 18px; color:#1f2937; }
+              h1 { color:#0b6f98; margin:0 0 8px; }
+              p { margin:4px 0; font-size:12px; color:#4b5563; }
+              table { width:100%; border-collapse: collapse; margin-top:12px; font-size:11px; }
+              th, td { border:1px solid #d1d5db; padding:6px; text-align:left; vertical-align:top; }
+              th { background:#eef4fa; }
+              img { max-width:100%; margin-top:10px; border:1px solid #d1d5db; }
+            </style>
+          </head>
+          <body>
+            <h1>FôrMål – Historikkrapport</h1>
+            <p>Generert: ${new Date().toLocaleString("nb-NO")}</p>
+            <p>Filter: ${getFilterSummary()}</p>
+            <p>Antall rader: ${records.length}</p>
+            <img src="${chartImg}" alt="Trenddiagram" />
+            <table>
+              <thead><tr><th>Dato / tid</th><th>Silo</th><th>Laseravstand (L)</th><th>Beregnet høyde (h)</th><th>Volum (m³)</th><th>Estimert kg</th><th>Operatør</th></tr></thead>
+              <tbody>${tableRows}</tbody>
+            </table>
+          </body>
+          </html>
+        `);
+        win.document.close();
+        win.focus();
+        setTimeout(() => win.print(), 250);
+      }
+
+      function refresh() {
+        state.filtered = sortRecords(applyFilters(state.all));
+        renderTable(state.filtered);
+        renderKgChart(state.filtered);
+        renderConsumptionChart(state.filtered);
+        renderForecast(state.filtered);
+      }
+
+      function bind() {
+        els.searchInput.addEventListener("input", () => {
+          state.filters.search = els.searchInput.value;
+          state.page = 1;
+          refresh();
+        });
+        els.dateFromInput.addEventListener("change", () => {
+          state.filters.dateFrom = els.dateFromInput.value;
+          state.page = 1;
+          refresh();
+        });
+        els.dateToInput.addEventListener("change", () => {
+          state.filters.dateTo = els.dateToInput.value;
+          state.page = 1;
+          refresh();
+        });
+        els.siloMulti.addEventListener("change", () => {
+          const selected = Array.from(els.siloMulti.querySelectorAll("input[type='checkbox']:checked"))
+            .map((el) => Number(el.value))
+            .filter((n) => Number.isFinite(n));
+          state.filters.silos = selected;
+          state.page = 1;
+          refresh();
+        });
+        els.kgMinInput.addEventListener("input", () => {
+          state.filters.kgMin = els.kgMinInput.value;
+          state.page = 1;
+          refresh();
+        });
+        els.kgMaxInput.addEventListener("input", () => {
+          state.filters.kgMax = els.kgMaxInput.value;
+          state.page = 1;
+          refresh();
+        });
+
+        els.clearFiltersBtn.addEventListener("click", () => {
+          state.filters = { search: "", dateFrom: "", dateTo: "", silos: Array.from(new Set(state.all.map((r) => r.siloId))), kgMin: "", kgMax: "" };
+          els.searchInput.value = "";
+          els.dateFromInput.value = "";
+          els.dateToInput.value = "";
+          Array.from(els.siloMulti.querySelectorAll("input[type='checkbox']")).forEach((el) => { el.checked = true; });
+          els.kgMinInput.value = "";
+          els.kgMaxInput.value = "";
+          state.page = 1;
+          refresh();
+        });
+
+        els.chips.forEach((chip) => {
+          chip.addEventListener("click", () => {
+            const days = Number(chip.dataset.range);
+            const now = new Date();
+            const from = new Date(now.getTime() - (days * 86400000));
+            els.dateFromInput.value = from.toISOString().slice(0, 10);
+            els.dateToInput.value = now.toISOString().slice(0, 10);
+            state.filters.dateFrom = els.dateFromInput.value;
+            state.filters.dateTo = els.dateToInput.value;
+            state.page = 1;
+            refresh();
+          });
+        });
+
+        els.sortButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const key = btn.dataset.sort;
+            if (state.sortKey === key) {
+              state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+            } else {
+              state.sortKey = key;
+              state.sortDir = "desc";
+            }
+            refresh();
+          });
+        });
+
+        els.rowsPerPageSelect.addEventListener("change", () => {
+          state.rowsPerPage = Number(els.rowsPerPageSelect.value);
+          state.page = 1;
+          refresh();
+        });
+
+        els.prevPageBtn.addEventListener("click", () => {
+          state.page = Math.max(1, state.page - 1);
+          refresh();
+        });
+        els.nextPageBtn.addEventListener("click", () => {
+          const totalPages = Math.max(1, Math.ceil(state.filtered.length / state.rowsPerPage));
+          state.page = Math.min(totalPages, state.page + 1);
+          refresh();
+        });
+
+        els.exportCsvBtn.addEventListener("click", () => exportCsv(state.filtered));
+        els.exportPdfBtn.addEventListener("click", () => exportPdf(state.filtered));
+
+        els.thresholdSelect.addEventListener("change", () => renderForecast(state.filtered));
+        els.customKgInput.addEventListener("input", () => renderForecast(state.filtered));
+        els.manualBurnInput.addEventListener("input", () => renderForecast(state.filtered));
+        els.forecastWindowSelect.addEventListener("change", () => renderForecast(state.filtered));
+
+        els.themeToggleBtn.addEventListener("click", () => {
+          const next = !document.body.classList.contains("theme-outdoor");
+          document.body.classList.toggle("theme-outdoor", next);
+          saveUiPrefs(next);
+          applyThemeButtonText();
+        });
+
+        window.addEventListener("online", updateNetworkBadge);
+        window.addEventListener("offline", updateNetworkBadge);
+
+        window.addEventListener("beforeinstallprompt", (event) => {
+          event.preventDefault();
+          deferredInstallPrompt = event;
+          els.installBtn.hidden = false;
+        });
+
+        els.installBtn.addEventListener("click", async () => {
+          if (!deferredInstallPrompt) {
+            const isiOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+            if (isiOS) {
+              window.alert("På iPhone installeres appen via Del-knappen i Safari -> Legg til på Hjem-skjerm.");
+            } else {
+              window.alert("Installering er ikke tilgjengelig akkurat nå. Åpne appen via HTTPS og prøv igjen.");
+            }
+            return;
+          }
+          deferredInstallPrompt.prompt();
+          try { await deferredInstallPrompt.userChoice; } catch (_err) { /* ignore */ }
+          deferredInstallPrompt = null;
+          els.installBtn.hidden = true;
+        });
+
+        els.closeDetailBtn.addEventListener("click", closeDetail);
+        els.detailModal.addEventListener("click", (e) => {
+          if (e.target === els.detailModal) closeDetail();
+        });
+
+        window.addEventListener("resize", () => {
+          renderKgChart(state.filtered);
+          renderConsumptionChart(state.filtered);
+        });
+
+        bindTooltip();
+      }
+
+      function init() {
+        try {
+          loadUiPrefs();
+          applyThemeButtonText();
+          state.all = loadRecords();
+          initSiloFilter(state.all);
+          bind();
+          updateNetworkBadge();
+          if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("sw.js").catch(() => {});
+          }
+          refresh();
+          els.loadingState.textContent = "";
+          els.errorState.textContent = "";
+          if (!state.all.length) {
+            els.loadingState.textContent = "Ingen historikk funnet. Data vises her når signerte målinger er lagret.";
+          }
+        } catch (err) {
+          els.loadingState.textContent = "";
+          els.errorState.textContent = "Kunne ikke laste historikkdata.";
+          console.error(err);
+        }
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>

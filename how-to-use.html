@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slik måler du i FôrMål</title>
+  <style>
+    :root {
+      --bg: #eef3f8;
+      --panel: #ffffff;
+      --line: #d5dee9;
+      --text: #152234;
+      --muted: #536377;
+      --brand: #0b6f98;
+      --brand-soft: #d8edf6;
+      --shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+      --radius: 18px;
+      --font: "SF Pro Text", "Helvetica Neue", "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #eef3f8 0%, #f8fbfe 100%);
+      color: var(--text);
+      font-family: var(--font);
+      padding: 14px;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+      padding-bottom: 24px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .top h1 {
+      margin: 0;
+      color: var(--brand);
+      font-size: clamp(1.15rem, 2.7vw, 1.62rem);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .intro {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid #9ec3d6;
+      background: var(--brand-soft);
+      color: var(--brand);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fbfdff;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .step-meta {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .num {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: var(--brand-soft);
+      border: 1px solid #9ec3d6;
+      color: var(--brand);
+      font-weight: 800;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+    }
+
+    .step h2 {
+      margin: 0 0 5px;
+      font-size: 1rem;
+      color: #15324d;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .illu {
+      width: 100%;
+      min-height: 145px;
+      border-radius: 12px;
+      border: 1px solid #d7e2ee;
+      background: linear-gradient(160deg, #f0f7fb 0%, #e4eef7 100%);
+      display: block;
+    }
+
+    @media (max-width: 760px) {
+      .top { align-items: flex-start; }
+      .step { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="card top">
+      <div>
+        <h1>Slik måler du i FôrMål</h1>
+        <p class="intro">Målet er å måle riktig slik at du får et presist og pålitelig fôrestimat.</p>
+      </div>
+      <a class="btn" href="index.html">Tilbake til appen</a>
+    </section>
+
+    <section class="card steps">
+      <article class="step">
+        <div class="step-meta">
+          <span class="num">1</span>
+          <div>
+            <h2>Plasser armen på kanten av siloen</h2>
+            <p>Hold laseren stødig, og bruk silokanten som støttepunkt.</p>
+          </div>
+        </div>
+        <svg class="illu" viewBox="0 0 320 180" aria-label="Steg 1 illustrasjon">
+          <rect x="35" y="48" width="250" height="95" rx="10" fill="#dbe7f3" stroke="#90a6bc"></rect>
+          <ellipse cx="160" cy="48" rx="125" ry="14" fill="#edf4fb" stroke="#90a6bc"></ellipse>
+          <line x1="58" y1="34" x2="146" y2="34" stroke="#7c92aa" stroke-width="8" stroke-linecap="round"></line>
+          <rect x="146" y="24" width="34" height="16" rx="3" fill="#0b6f98"></rect>
+          <rect x="175" y="30" width="9" height="5" rx="2" fill="#89d5ff"></rect>
+          <circle cx="154" cy="32" r="3" fill="#9cd7f5"></circle>
+        </svg>
+      </article>
+
+      <article class="step">
+        <div class="step-meta">
+          <span class="num">2</span>
+          <div>
+            <h2>Mål avstanden til silosenteret</h2>
+            <p>Mål fra silokanten inn til senterlinjen (midten) av siloen.</p>
+          </div>
+        </div>
+        <svg class="illu" viewBox="0 0 320 180" aria-label="Steg 2 illustrasjon">
+          <rect x="35" y="48" width="250" height="95" rx="10" fill="#dbe7f3" stroke="#90a6bc"></rect>
+          <ellipse cx="160" cy="48" rx="125" ry="14" fill="#edf4fb" stroke="#90a6bc"></ellipse>
+          <line x1="58" y1="48" x2="160" y2="48" stroke="#0b6f98" stroke-width="2.4" stroke-dasharray="4 4"></line>
+          <line x1="160" y1="34" x2="160" y2="95" stroke="#2aa8d4" stroke-width="2"></line>
+          <text x="166" y="43" fill="#0b6f98" font-size="12" font-family="Segoe UI, sans-serif">senter</text>
+        </svg>
+      </article>
+
+      <article class="step">
+        <div class="step-meta">
+          <span class="num">3</span>
+          <div>
+            <h2>Uten å flytte armen: vipp laseren og mål til fôrkanten</h2>
+            <p>Hold armen i samme posisjon, vipp laseren og mål avstanden til der fôret møter siloveggen.</p>
+          </div>
+        </div>
+        <svg class="illu" viewBox="0 0 320 180" aria-label="Steg 3 illustrasjon">
+          <rect x="35" y="48" width="250" height="95" rx="10" fill="#dbe7f3" stroke="#90a6bc"></rect>
+          <ellipse cx="160" cy="48" rx="125" ry="14" fill="#edf4fb" stroke="#90a6bc"></ellipse>
+          <path d="M52 108 L268 108 L245 128 L75 128 Z" fill="#59c87c"></path>
+          <path d="M146 24 h34 v16 h-34 z" fill="#0b6f98"></path>
+          <line x1="180" y1="33" x2="247" y2="108" stroke="#58c9f4" stroke-width="2.4" stroke-dasharray="4 4"></line>
+          <text x="228" y="101" fill="#0b6f98" font-size="12" font-family="Segoe UI, sans-serif">fôrkanten</text>
+        </svg>
+      </article>
+
+      <article class="step">
+        <div class="step-meta">
+          <span class="num">4</span>
+          <div>
+            <h2>Legg inn målene i FôrMål</h2>
+            <p>Fyll inn verdiene i appen, og estimatet blir beregnet.</p>
+          </div>
+        </div>
+        <svg class="illu" viewBox="0 0 320 180" aria-label="Steg 4 illustrasjon">
+          <rect x="55" y="28" width="210" height="124" rx="12" fill="#ffffff" stroke="#9fb4c8"></rect>
+          <rect x="72" y="46" width="176" height="18" rx="6" fill="#e6f0f8"></rect>
+          <rect x="72" y="72" width="176" height="18" rx="6" fill="#e6f0f8"></rect>
+          <rect x="72" y="98" width="176" height="22" rx="8" fill="#d8edf6" stroke="#9ec3d6"></rect>
+          <path d="M225 128 l9 9 l18 -20" fill="none" stroke="#1e9f5b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
